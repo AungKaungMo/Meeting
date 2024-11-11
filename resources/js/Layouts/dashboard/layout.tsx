@@ -15,14 +15,12 @@ import { layoutClasses } from "../classes";
 import { NavDesktop, NavMobile } from "./nav";
 import { navData } from "../data/config-nav";
 // import { Searchbar } from '../components/searchbar';
-import { _workspaces } from "../data/config-workspace";
 import { MenuButton } from "../components/menu-button";
 import { LayoutSection } from "../core/layout-section";
 import { HeaderSection } from "../core/header-section";
 import { AccountPopover } from "../components/account-popover";
 import { LanguagePopover } from "../components/language-popover";
 import { NotificationsPopover } from "../components/notifications-popover";
-import { DashboardContent } from "./content";
 
 // ----------------------------------------------------------------------
 
@@ -82,7 +80,6 @@ export function DashboardLayout({
                                     data={navData}
                                     open={navOpen}
                                     onClose={() => setNavOpen(false)}
-                                    workspaces={_workspaces}
                                 />
                             </>
                         ),
@@ -137,18 +134,26 @@ export function DashboardLayout({
                 <NavDesktop
                     data={navData}
                     layoutQuery={layoutQuery}
-                    workspaces={_workspaces}
                 />
             }
-
             cssVars={{
-              '--layout-nav-vertical-width': '300px',
+                "--layout-nav-vertical-width": "300px",
             }}
             sx={{
-              ...sx,
+                ...sx,
             }}
         >
-            <DashboardContent>{children}</DashboardContent>
+            <Box
+                sx={{
+                    marginLeft: "340px",
+                    marginRight: "2.5em",
+                    [theme.breakpoints.down(layoutQuery)]: {
+                        marginLeft: "30px",
+                    },
+                }}
+            >
+                {children}
+            </Box>
         </LayoutSection>
     );
 }

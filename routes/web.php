@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\v1\PackageController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,13 +28,20 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-Route::get('logout', [AuthenticatedSessionController::class, 'destroy']);
 Route::redirect('/', '/dashboard');
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+
+    //USER
+    Route::resource('/users', UserController::class);
+
+    //PACKAGE
+    Route::resource('/packages', PackageController::class);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

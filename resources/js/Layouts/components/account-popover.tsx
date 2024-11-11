@@ -1,6 +1,6 @@
 import type { IconButtonProps } from '@mui/material/IconButton';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, FormEventHandler } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,9 +12,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
-import { _myAccount } from '../data/user-data';
-
-// ----------------------------------------------------------------------
+import { useForm, usePage } from '@inertiajs/react';
 
 export type AccountPopoverProps = IconButtonProps & {
   data?: {
@@ -25,10 +23,18 @@ export type AccountPopoverProps = IconButtonProps & {
   }[];
 };
 
-export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
-  // const router = useRouter();
+type CurrentUserType = {
+  auth: {
+    user: {
+      name: string,
+      email: string,
+      profile_image_url: string
+    }
+  }
+}
 
-  // const pathname = usePathname();
+export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps) {
+  const { post } = useForm();
 
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
@@ -48,7 +54,14 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     [handleClosePopover]
   );
 
-  return (
+  const handleLogout : FormEventHandler = (e) => {
+    e.preventDefault();
+
+    post(route('logout'))
+  }
+
+  const { props } = usePage<CurrentUserType>()
+   return (
     <>
       <IconButton
         onClick={handleOpenPopover}
@@ -62,8 +75,8 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
         }}
         {...other}
       >
-        <Avatar src={_myAccount.photoURL} alt={_myAccount.displayName} sx={{ width: 1, height: 1 }}>
-          {_myAccount.displayName.charAt(0).toUpperCase()}
+        <Avatar src={'/storage/' + props.auth?.user?.profile_image_url} alt={props.auth?.user?.name || 'Anonymous'} sx={{ width: 1, height: 1 }}>
+          {props.auth?.user?.name?.charAt(0).toUpperCase() || 'Anonymous'.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -81,11 +94,11 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {_myAccount?.displayName}
+            {props.auth?.user?.name || 'Anonymous'}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {_myAccount?.email}
+            {props.auth?.user?.email || 'anonymous@gmail.com'}
           </Typography>
         </Box>
 
@@ -126,11 +139,13 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Box sx={{ p: 1 }}>
-          <Button fullWidth color="error" size="medium" variant="text">
+       <form onSubmit={handleLogout}>
+       <Box sx={{ p: 1 }}>
+          <Button type='submit' fullWidth color="error" size="medium" variant="text">
             Logout
           </Button>
         </Box>
+       </form>
       </Popover>
     </>
   );

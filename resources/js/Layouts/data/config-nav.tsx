@@ -1,22 +1,17 @@
-import { Label } from "@/Components/label";
 import { SvgColor } from '@/Components/svg-color';
 
 const icon = (name: string) => (
   <SvgColor width="100%" height="100%" src={`/assets/icons/navbar/${name}.svg`} />
 );
+
 export const navData = [
     {
       title: "Dashboard",
       data: [
         {
           title: 'Dashboard',
-          path: '/',
+          path: '/dashboard',
           icon: icon('ic-analytics'),
-        },
-        {
-          title: 'User',
-          path: '/user',
-          icon: icon('ic-user'),
         },
         {
           title: 'Product',
@@ -26,23 +21,38 @@ export const navData = [
       ]
     }, 
     {
-      title: "Others",
+      title: "Clients",
       data: [
         {
-          title: 'Blog',
-          path: '/blog',
-          icon: icon('ic-blog'),
+          title: "Company",
+          path: '/companies',
+          icon: icon('ic-company')
         },
         {
-          title: 'Sign in',
-          path: '/sign-in',
-          icon: icon('ic-lock'),
+          title: "Business Unit",
+          path: '/business_units',
+          icon: icon('ic-company')
         },
         {
-          title: 'Not found',
-          path: '/404',
-          icon: icon('ic-disabled'),
+          title: "Department",
+          path: "/department",
+          icon: icon("ic-department")
+        }
+      ]
+    },
+    {
+      title: "Administrations",
+      data: [
+        {
+          title: 'Packages',
+          path: '/packages',
+          icon: icon('ic-package'),
         },
+        {
+          title: 'Users',
+          path: '/users',
+          icon: icon('ic-user'),
+        }
       ]
     }
   ];
