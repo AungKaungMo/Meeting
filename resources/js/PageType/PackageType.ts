@@ -6,6 +6,7 @@ type PackageType = {
     limit_employee: number;
     max_employee: number;
     status: number;
+    description: any;
 };
 
 export type PackageListPropsType = FilterType & {
@@ -22,6 +23,7 @@ export type PackagePropsType = {
 export type PackageDataType = {
     name: string;
     limit_employee: number;
-    max_employee: number;
+    max_employee: number | undefined;
     status: number;
+    description: any;
 };

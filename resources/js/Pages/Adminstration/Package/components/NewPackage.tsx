@@ -3,10 +3,8 @@ import {
     Dialog,
     DialogTitle,
     Stack,
-    TextField,
-    Avatar,
-    Button,
     Box,
+    IconButton,
 } from "@mui/material";
 import { useForm } from "@inertiajs/react";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -15,10 +13,16 @@ import { useSnackbar } from "@/Context/SnackbarProvider";
 import CustomTextField from "@/Components/CustomTextField";
 import CustomDropdown from "@/Components/CustomDropdown";
 import { PackageDataType } from "@/PageType";
+import { Iconify } from "@/Components/iconify";
 
 interface NewPackageProps {
     open: boolean;
     onClose: () => void;
+}
+
+export type DescriptionType = {
+    id: number;
+    value: string
 }
 
 const NewPackage = ({ open, onClose }: NewPackageProps) => {
@@ -27,17 +31,31 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
         useForm<PackageDataType>({
             name: "",
             limit_employee: 1,
-            max_employee: 0,
+            max_employee: undefined,
             status: 1,
+            description: []
         });
+    const [desc, setDesc] = useState<DescriptionType[]>([
+        {
+            id: 1,
+            value: ''
+        }
+    ])
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setData("description", JSON.stringify(desc))
+
         post("/packages", {
             onSuccess: () => {
                 handleOnClose();
                 showSnackbar("Package created successfully.");
             },
+            onError: (error: any) => {
+                if (!error?.response?.data?.errors) {
+                    console.error("Error:", error);
+                }
+            }
         });
     };
 
@@ -49,6 +67,22 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
         setError("max_employee", "");
         setError("status", "");
     };
+
+    const handleChangeDesc = (index: number, value: string) => {
+        const newDesc = [...desc];
+        newDesc[index] = { ...newDesc[index], value };
+        setDesc(newDesc);
+    }
+
+    const handleAdd = (id: number) => {
+        const newDesc =  [...desc, { id: id + 1, value: '' }];
+        setDesc(newDesc)
+    }
+
+    const handleRemove = (id: number) => {
+        const newDesc = desc.filter(item => item.id !== id);
+        setDesc(newDesc);
+    }
 
     return (
         <Dialog
@@ -75,7 +109,7 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
                         helperText={errors.name}
                     />
 
-                     {/* Limit Employee */}
+                    {/* Limit Employee */}
                      <CustomDropdown
                         label="Select Limit Employee"
                         value={data.limit_employee}
@@ -87,6 +121,39 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
                         placeholder="Select options"
                         width={300}
                     />
+
+                    {/* Max Employee */}
+                    <CustomTextField
+                        type="number"
+                        label="Max Employee"
+                        value={data.max_employee ?? ''}
+                        onChange={(e) => setData("max_employee",Number(e.target.value))}
+                        error={!!errors.max_employee}
+                        helperText={errors.max_employee}
+                    />
+
+                    {desc.map((item, index) => (
+                        <Stack spacing={2} direction='row' key={index}>
+                            <CustomTextField
+                                label="Description"
+                                value={item.value}
+                                onChange={(e) => handleChangeDesc(index, e.target.value)}
+                                error={!!errors.name}
+                                helperText={errors.name}
+                            />
+
+                            {index === desc.length - 1 ? (
+                                <IconButton onClick={() => handleAdd(item.id)}>
+                                    <Iconify icon="icon-park-twotone:add-one" />
+                                </IconButton>
+                            ) : (
+                                <IconButton onClick={() => handleRemove(item.id)}>
+                                    <Iconify icon="mdi:delete" />
+                                </IconButton>
+                            )}
+                        </Stack>
+                    ))}
+
                 </Stack>
 
                 <Box

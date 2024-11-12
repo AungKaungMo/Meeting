@@ -1,110 +1,63 @@
 import React, { useEffect, useState } from "react";
-import {
-    Dialog,
-    DialogTitle,
-    Stack,
-    TextField,
-    Avatar,
-    Button,
-    Box,
-} from "@mui/material";
+import { Dialog, DialogTitle, Stack, Box, IconButton } from "@mui/material";
+import CustomTextField from "@/Components/CustomTextField";
+import CustomDropdown from "@/Components/CustomDropdown";
+import { Iconify } from "@/Components/iconify";
 import { router, useForm } from "@inertiajs/react";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadingCircle from "@/icons/LoadingCircle";
 import { useSnackbar } from "@/Context/SnackbarProvider";
-
-type UserDataType = {
-    name: string;
-    email: string;
-    photo: File | null;
-    changeImage: boolean;
-};
-
-type UserProps = {
-    id: number;
-    name: string;
-    email: string;
-    profile_image_url: string;
-};
+import { PackageDataType } from "@/PageType";
+import { DescriptionType } from "./NewPackage";
 
 interface EditPackageProps {
     open: boolean;
     onClose: () => void;
-    user: UserProps;
+    packageData: PackageDataType & {id: number};
 }
 
-const EditPackage = ({ open, onClose, user }: EditPackageProps) => {
+const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
     const { showSnackbar } = useSnackbar();
-    const [image, setImage] = useState<string | null>(
-        user.profile_image_url ? "storage/" + user.profile_image_url : null
-    );
-    const { data, setData, errors, setError, processing, reset } =
-        useForm<UserDataType>({
-            name: user.name,
-            email: user.email,
-            photo: null,
-            changeImage: false,
+
+    const { data, setData, errors, put, setError, processing, reset } =
+        useForm<PackageDataType>({
+            name: packageData.name,
+            limit_employee: packageData.limit_employee,
+            max_employee: packageData.max_employee,
+            status: packageData.status,
+            description: JSON.stringify(packageData.description),
         });
+
+    const [desc, setDesc] = useState<DescriptionType[]>(packageData.description)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setData("changeImage", image !== `storage/${user.profile_image_url}`);
+        setData("description", JSON.stringify(desc))
 
-        const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('email', data.email);
-
-        if(image !== `storage/${user.profile_image_url}`) {
-            formData.append('changeImage', '1')
-            // console.log('reach');
-        }
-
-        // return;
-
-        if(data.photo) {
-            formData.append('photo', data.photo)
-        }
-
-        formData.append("_method", "PUT");
-
-        router.post(`/users/${user.id}`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
+        put("/packages/" + packageData.id, {
             onSuccess: () => {
                 handleOnClose();
-                showSnackbar('User updated successfully.')
+                showSnackbar("Package updated successfully.");
             },
-            onError: (error) => {
-                console.error("Error updating user:", error);
-            },
+            onError: (error: any) => {
+                if (!error?.response?.data?.errors) {
+                    console.error("Error:", error);
+                }
+            }
         });
     };
-
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            setData("photo", file);
-            setImage(URL.createObjectURL(file));
-        }
-    };
-
-    const handleClearImage = () => {
-        setImage(null);
-        setData("photo", null);
-    };
-
     const clearError = () => {
         setError("name", "");
-        setError("email", "");
-        setError("photo", "");
-    }
+        setError("limit_employee", "");
+        setError("max_employee", "");
+        setError("status", "");
+        setError("description", "");
+    };
 
     const restageDefault = () => {
         reset();
-        setImage(user.profile_image_url ? `storage/${user.profile_image_url}` : null);
         clearError();
-    }
+    };
 
     const handleOnClose = () => {
         onClose();
@@ -112,8 +65,24 @@ const EditPackage = ({ open, onClose, user }: EditPackageProps) => {
     };
 
     useEffect(() => {
-        restageDefault()
-    }, [user, open]);
+        restageDefault();
+    }, [packageData, open]);
+
+    const handleChangeDesc = (index: number, value: string) => {
+        const newDesc = [...desc];
+        newDesc[index] = { ...newDesc[index], value };
+        setDesc(newDesc);
+    }
+
+    const handleAdd = (id: number) => {
+        const newDesc =  [...desc, { id: id + 1, value: '' }];
+        setDesc(newDesc)
+    }
+
+    const handleRemove = (id: number) => {
+        const newDesc = desc.filter(item => item.id !== id);
+        setDesc(newDesc);
+    }
 
     return (
         <Dialog
@@ -122,7 +91,7 @@ const EditPackage = ({ open, onClose, user }: EditPackageProps) => {
             disableEnforceFocus={false}
             disableAutoFocus={false}
         >
-            <DialogTitle>Edit User</DialogTitle>
+            <DialogTitle>Edit Package</DialogTitle>
 
             <Box
                 component="form"
@@ -130,69 +99,64 @@ const EditPackage = ({ open, onClose, user }: EditPackageProps) => {
                 noValidate
                 sx={{ mt: 3, width: "100%", minWidth: 500, mx: "auto" }}
             >
-                <Stack spacing={2} mx={2}>
-                    <Stack spacing={2} alignItems="center" pb={3}>
-                        <Avatar
-                            src={image || undefined}
-                            alt="User Photo"
-                            sx={{ width: 100, height: 100 }}
-                        />
-
-                        <Stack direction="row" spacing={2}>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                onClick={handleClearImage}
-                                disabled={!image}
-                            >
-                                Clear Image
-                            </Button>
-
-                            <label htmlFor="upload-image">
-                                <input
-                                    accept="image/*"
-                                    id="upload-image"
-                                    type="file"
-                                    style={{ display: "none" }}
-                                    onChange={handleImageChange}
-                                />
-                                <Button variant="outlined" component="span">
-                                    Upload New Image
-                                </Button>
-                            </label>
-                        </Stack>
-                    </Stack>
-
+                <Stack spacing={3} mx={2}>
                     {/* Name */}
-                    <TextField
-                        fullWidth
+                    <CustomTextField
                         label="Name"
                         value={data.name}
                         onChange={(e) => setData("name", e.target.value)}
-                        sx={{
-                            "& .MuiFormLabel-root": {
-                                fontSize: "0.9rem",
-                            },
-                        }}
                         error={!!errors.name}
                         helperText={errors.name}
                     />
 
-                    {/* Email */}
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        type="email"
-                        sx={{
-                            "& .MuiFormLabel-root": {
-                                fontSize: "0.9rem",
-                            },
-                        }}
-                        value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
-                        error={!!errors.email}
-                        helperText={errors.email}
+                    {/* Limit Employee */}
+                    <CustomDropdown
+                        label="Select Limit Employee"
+                        value={data.limit_employee}
+                        onChange={(e) =>
+                            setData("limit_employee", Number(e.target.value))
+                        }
+                        options={[
+                            { id: 1, name: "Yes" },
+                            { id: 0, name: "No" },
+                        ]}
+                        placeholder="Select options"
+                        width={300}
                     />
+
+                    {/* Max Employee */}
+                    <CustomTextField
+                        type="number"
+                        label="Max Employee"
+                        value={data.max_employee ?? ""}
+                        onChange={(e) =>
+                            setData("max_employee", Number(e.target.value))
+                        }
+                        error={!!errors.max_employee}
+                        helperText={errors.max_employee}
+                    />
+
+                    {desc.map((item, index) => (
+                        <Stack spacing={2} direction='row' key={index}>
+                            <CustomTextField
+                                label="Description"
+                                value={item.value}
+                                onChange={(e) => handleChangeDesc(index, e.target.value)}
+                                error={!!errors.name}
+                                helperText={errors.name}
+                            />
+
+                            {index === desc.length - 1 ? (
+                                <IconButton onClick={() => handleAdd(item.id)}>
+                                    <Iconify icon="icon-park-twotone:add-one" />
+                                </IconButton>
+                            ) : (
+                                <IconButton onClick={() => handleRemove(item.id)}>
+                                    <Iconify icon="mdi:delete" />
+                                </IconButton>
+                            )}
+                        </Stack>
+                    ))}
                 </Stack>
 
                 <Box

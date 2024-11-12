@@ -15,6 +15,7 @@ const PackageList = ({ packages, direction, sort, filter }: PackageListPropsType
         order: direction,
         orderBy: sort,
         filterName: filter,
+        routePath: "/packages"
     });
     const [open, setOpen] = useState(false);
 

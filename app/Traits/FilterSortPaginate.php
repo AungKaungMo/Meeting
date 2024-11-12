@@ -8,10 +8,16 @@ trait FilterSortPaginate
 {
     public function filterSortPaginate($query, Request $request, array $filterableFields = [], array $defaultSort = ['id', 'desc'])
     {
-        foreach ($filterableFields as $field) {
-            if ($value = $request->input("filterName")) {
-                $query->where($field, 'like', "%{$value}%");
-            }
+        if ($value = $request->input("filterName")) {
+            $query->where(function ($query) use ($filterableFields, $value) {
+                foreach ($filterableFields as $field) {
+                    if (is_numeric($value)) {
+                        $query->orWhere($field, (int) $value);
+                    } else {
+                        $query->orWhere($field, 'like', "%{$value}%");
+                    }
+                }
+            });
         }
 
         $sort = $request->input('sort') ?? $defaultSort[0];

@@ -3,11 +3,12 @@ import TextField from "@mui/material/TextField";
 
 interface CustomTextFieldProps {
     label: string;
-    value: string;
+    value: string | number | undefined;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: boolean;
     helperText?: string;
     fullWidth?: boolean;
+    type?: string
 }
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({
@@ -17,6 +18,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
     error = false,
     helperText = "",
     fullWidth = true,
+    type = 'text'
 }) => {
     return (
         <TextField
@@ -24,6 +26,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
             label={label}
             value={value}
             onChange={onChange}
+            type={type}
             sx={{
                 "& .MuiFormLabel-root": {
                     fontSize: "0.9rem",

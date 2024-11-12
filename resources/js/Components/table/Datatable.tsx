@@ -67,7 +67,7 @@ const Datatable = ({
                     }}
                 >
                     <OutlinedInput
-                        value={filterName}
+                        value={filterName || ""}
                         onChange={onFilterNameChange}
                         placeholder="Search..."
                         startAdornment={

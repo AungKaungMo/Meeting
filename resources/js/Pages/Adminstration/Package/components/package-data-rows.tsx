@@ -1,7 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import {
-    Avatar,
-    Box,
+    Chip,
     IconButton,
     MenuItem,
     MenuList,
@@ -10,19 +9,19 @@ import {
     TableRow,
 } from "@mui/material";
 import { Iconify } from "@/Components/iconify";
-import EditUser from "./EditPackage";
-import DeleteDialog from "@/Components/DeleteDialog";
 import { router } from "@inertiajs/react";
 import { useSnackbar } from "@/Context/SnackbarProvider";
-import { PackagePropsType } from '@/PageType'
+import { PackagePropsType } from "@/PageType";
+import EditPackage from "./EditPackage";
+import DeleteDialog from "@/Components/DeleteDialog";
 
-
-const PackageDataRows: React.FC<PackagePropsType> = ({ packageData ,id }) => {
-
+const PackageDataRows: React.FC<PackagePropsType> = ({ packageData, id }) => {
     const { showSnackbar } = useSnackbar();
 
-    const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
-    const [open, setOpen] = useState(false)
+    const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
+        null
+    );
+    const [open, setOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
 
     const handleOpenPopover = useCallback(
@@ -38,30 +37,39 @@ const PackageDataRows: React.FC<PackagePropsType> = ({ packageData ,id }) => {
 
     const handleEditBox = () => {
         setOpenPopover(null);
-        setOpen(!open)
-    }
+        setOpen(!open);
+    };
 
     const handleDeleteBox = () => {
         setOpenPopover(null);
         setDeleteOpen(!deleteOpen);
-    }
+    };
 
     const handleDeleteAction = () => {
-        router.delete('packages/'+packageData.id, {
+        router.delete("packages/" + packageData.id, {
             onSuccess: () => {
                 handleDeleteBox();
-                showSnackbar('Package deleted successfully.')
+                showSnackbar("Package deleted successfully.");
             },
-        })
-    }
+        });
+    };
 
     return (
         <>
             <TableRow hover tabIndex={1}>
-
                 <TableCell>{id}.</TableCell>
 
                 <TableCell>{packageData.name}</TableCell>
+                <TableCell>
+                    {packageData.limit_employee ? "Yes" : "No"}
+                </TableCell>
+                <TableCell>{packageData.max_employee}</TableCell>
+                <TableCell>
+                    <Chip
+                        label={packageData.status ? "Active" : "Inactive"}
+                        color={packageData.status ? "primary" : "error"}
+                    />
+                </TableCell>
 
                 <TableCell align="right">
                     <IconButton onClick={handleOpenPopover}>
@@ -99,8 +107,8 @@ const PackageDataRows: React.FC<PackagePropsType> = ({ packageData ,id }) => {
                 </MenuList>
             </Popover>
 
-            {/* <EditUser open={open} onClose={handleEditBox} user={user} />
-            <DeleteDialog open={deleteOpen} onOpenChange={handleDeleteBox} onCancel={handleDeleteBox} onConfirm={handleDeleteAction} /> */}
+            <EditPackage open={open} onClose={handleEditBox} packageData={packageData} />
+           <DeleteDialog open={deleteOpen} onOpenChange={handleDeleteBox} onCancel={handleDeleteBox} onConfirm={handleDeleteAction} />
         </>
     );
 };

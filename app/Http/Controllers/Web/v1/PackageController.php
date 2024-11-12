@@ -18,7 +18,7 @@ class PackageController extends Controller
     {
         $query = Package::query();
 
-        $filterFields = ['name', 'max_employee'];
+        $filterFields = ['name'];
         $packages = $this->filterSortPaginate($query, $request, $filterFields);
 
         return Inertia::render('Adminstration/Package/PackageList', [
@@ -26,6 +26,7 @@ class PackageController extends Controller
             'sort' => $request->input('sort'),
             'direction' => $request->input('direction'),
             'filter' => $request->input('filterName'),
+            'test' => is_numeric($request->input('filterName'))
         ]);
     }
 
@@ -42,7 +43,27 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'limit_employee' => 'required|in:0,1',
+            'max_employee' => 'required_if:limit_employee,1|integer',
+            'description' => 'required|json',
+        ], [
+            'max_employee.required_if' => 'The max employee field is required when limit employee is "yes".',
+        ]);
+
+        try {
+            Package::create([
+                'name' => $request->name,
+                'limit_employee' => $request->limit_employee,
+                'max_employee' => $request->max_employee,
+                'description' => json_decode($request->description, true),
+            ]);
+
+            return redirect()->route('packages.index')->with('success', 'Package created successfully.');
+        } catch (\Throwable $th) {
+            return back()->withErrors(['error' => 'Failed to create package: ' . $th->getMessage()])->withInput();
+        }
     }
 
     /**
@@ -66,7 +87,28 @@ class PackageController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'limit_employee' => 'required|in:0,1',
+            'max_employee' => 'required_if:limit_employee,1|integer',
+            'description' => 'required|json',
+        ], [
+            'max_employee.required_if' => 'The max employee field is required when limit employee is "yes".',
+        ]);
+
+        try {
+            $package = Package::findOrFail($id);
+            $package->update([
+                'name' => $request->name,
+                'limit_employee' => $request->limit_employee,
+                'max_employee' => $request->max_employee,
+                'description' => json_decode($request->description, true),
+            ]);
+
+            return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
+        } catch (\Throwable $th) {
+            return back()->withErrors(['error' => 'Failed to create package: ' . $th->getMessage()])->withInput();
+        }
     }
 
     /**
@@ -74,6 +116,15 @@ class PackageController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $package = Package::findOrFail($id);
+            if ($package) {
+                $package->delete();
+            }
+
+            return redirect()->route('packages.index')->with('success', 'Package deleted successfully.');
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
     }
 }

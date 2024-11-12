@@ -30,6 +30,7 @@ const UserList = ({ users, direction, sort, filter }: UserListProps) => {
         order: direction,
         orderBy: sort,
         filterName: filter,
+        routePath: "/users"
     });
     const [open, setOpen] = useState(false);
 
