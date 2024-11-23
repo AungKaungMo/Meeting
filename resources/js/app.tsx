@@ -8,6 +8,8 @@ import { CustomThemeProvider } from "./theme/theme-provider";
 import { ComponentType } from "react";
 import LayoutProvider from "./Layouts/LayoutProvider";
 import { SnackbarProvider } from "./Context/SnackbarProvider";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs'
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -33,6 +35,7 @@ createInertiaApp({
         )) as PageComponent;
 
         if (!page.default.layout) {
+
             page.default.layout = (page) => (
                 <LayoutProvider page={page}></LayoutProvider>
             );
@@ -46,12 +49,16 @@ createInertiaApp({
         root.render(
             <SnackbarProvider>
                 <CustomThemeProvider>
-                    <App {...props} />
+                   <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <App {...props} />
+                   </LocalizationProvider>
                 </CustomThemeProvider>
             </SnackbarProvider>
         );
     },
     progress: {
-        color: "#4B5563",
+        color: "#29d",
+        delay: 250,
+        showSpinner: true,
     },
 });

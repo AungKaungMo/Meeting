@@ -16,18 +16,21 @@ class PackageController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Package::query();
+        try {
+            $query = Package::query();
 
-        $filterFields = ['name'];
-        $packages = $this->filterSortPaginate($query, $request, $filterFields);
+            $filterFields = ['name'];
+            $packages = $this->filterSortPaginate($query, $request, $filterFields);
 
-        return Inertia::render('Adminstration/Package/PackageList', [
-            'packages' => $packages,
-            'sort' => $request->input('sort'),
-            'direction' => $request->input('direction'),
-            'filter' => $request->input('filterName'),
-            'test' => is_numeric($request->input('filterName'))
-        ]);
+            return Inertia::render('MasterData/Package/PackageList', [
+                'packages' => $packages,
+                'sort' => $request->input('sort'),
+                'direction' => $request->input('direction'),
+                'filter' => $request->input('filterName'),
+            ]);
+        } catch (\Throwable $th) {
+            dd($th->getMessage());
+        }
     }
 
     /**
@@ -103,6 +106,7 @@ class PackageController extends Controller
                 'limit_employee' => $request->limit_employee,
                 'max_employee' => $request->max_employee,
                 'description' => json_decode($request->description, true),
+                'status' => $request->status
             ]);
 
             return redirect()->route('packages.index')->with('success', 'Package updated successfully.');

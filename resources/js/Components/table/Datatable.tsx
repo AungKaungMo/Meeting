@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     Card,
     IconButton,
     InputAdornment,
@@ -18,6 +19,8 @@ import { Iconify } from "@/Components/iconify";
 import TablePagination from "@mui/material/TablePagination";
 import "./style.css";
 import { router } from "@inertiajs/react";
+import { useState } from "react";
+import ExcelImportDialog from "../ExcelImportDialog";
 
 type ReusableTableProps = {
     columns: Record<string, any>[];
@@ -35,7 +38,12 @@ type ReusableTableProps = {
     order: "asc" | "desc";
     filterName: string;
     onFilterNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    refreshPath: string
+    refreshPath: string;
+    excelImport?: boolean;
+    excel_url?: string;
+    example_excel_formats?: any,
+    example_excel_header_formats?: any,
+    notes?: any
 };
 
 const Datatable = ({
@@ -52,9 +60,13 @@ const Datatable = ({
     filterName,
     onFilterNameChange,
     refreshPath,
+    excelImport = false,
+    excel_url,
+    example_excel_formats,
+    example_excel_header_formats,
+    notes
 }: ReusableTableProps) => {
-    
-
+    const [open, setOpen] = useState(false);
     return (
         <>
             <Card sx={{ marginTop: 4, marginBottom: 8 }}>
@@ -81,11 +93,26 @@ const Datatable = ({
                         }
                         sx={{ maxWidth: 320 }}
                     />
-                    <Tooltip title="Refresh">
-                        <IconButton onClick={() => router.get(refreshPath)}>
-                            <Iconify icon="ic:baseline-refresh" />
-                        </IconButton>
-                    </Tooltip>
+                    <Box>
+                        <Tooltip title="Refresh">
+                            <IconButton onClick={() => router.get(refreshPath)}>
+                                <Iconify icon="ic:baseline-refresh" />
+                            </IconButton>
+                        </Tooltip>
+
+                        {excelImport && (
+                            <Button
+                                onClick={() => setOpen(true)}
+                                sx={{ marginLeft: 2 }}
+                                variant="contained"
+                                startIcon={
+                                    <Iconify icon="lets-icons:import-light" />
+                                }
+                            >
+                                Excel Import
+                            </Button>
+                        )}
+                    </Box>
                 </Toolbar>
 
                 <TableContainer>
@@ -106,18 +133,23 @@ const Datatable = ({
                                             minWidth: column.minWidth,
                                         }}
                                     >
-                                        <TableSortLabel
-                                            active={orderBy === column.id}
-                                            direction={
-                                                orderBy === column.id
-                                                    ? order
-                                                    : "asc"
-                                            }
-                                            onClick={() => onSort(column.id)}
-                                        >
-                                            {column.label}
-                                            
-                                        </TableSortLabel>
+                                        {column.sorting ? (
+                                            <TableSortLabel
+                                                active={orderBy === column.id}
+                                                direction={
+                                                    orderBy === column.id
+                                                        ? order
+                                                        : "asc"
+                                                }
+                                                onClick={() =>
+                                                    onSort(column.id)
+                                                }
+                                            >
+                                                {column.label}
+                                            </TableSortLabel>
+                                        ) : (
+                                            column.label
+                                        )}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -137,6 +169,17 @@ const Datatable = ({
                     rowsPerPageOptions={[5, 10, 25]}
                 />
             </Card>
+
+            {excel_url && excelImport && example_excel_formats && example_excel_header_formats && (
+                <ExcelImportDialog
+                    example_excel_header_formats={example_excel_header_formats}
+                    example_excel_formats={example_excel_formats}
+                    notes={notes}
+                    url={excel_url}
+                    open={open}
+                    handleOpen={() => setOpen(!open)}
+                />
+            )}
         </>
     );
 };

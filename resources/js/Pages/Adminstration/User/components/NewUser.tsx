@@ -9,8 +9,8 @@ import {
     Box,
 } from "@mui/material";
 import { useForm } from "@inertiajs/react";
-import LoadingButton from '@mui/lab/LoadingButton';
-import LoadingCircle from '@/icons/LoadingCircle'
+import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingCircle from "@/icons/LoadingCircle";
 import { useSnackbar } from "@/Context/SnackbarProvider";
 
 type UserDataType = {
@@ -21,11 +21,11 @@ type UserDataType = {
 };
 
 interface NewUserProps {
-    open: boolean, 
-    onClose: () => void
+    open: boolean;
+    onClose: () => void;
 }
 
-const NewUser = ({open, onClose} : NewUserProps) => {
+const NewUser = ({ open, onClose }: NewUserProps) => {
     const [image, setImage] = useState<string | null>(null);
     const { showSnackbar } = useSnackbar();
     const { data, setData, post, errors, setError, processing, reset } =
@@ -42,16 +42,30 @@ const NewUser = ({open, onClose} : NewUserProps) => {
             onSuccess: () => {
                 handleOnClose();
                 handleClearImage();
-                showSnackbar('User created successfully.')
-            }
-        }); 
+                showSnackbar("User created successfully.");
+            },
+            onError: (error: any) => {
+                if (error.error) {
+                    return showSnackbar("Failed to create employee.", "error");
+                } else if (
+                    error &&
+                    typeof error === "object" &&
+                    !Array.isArray(error)
+                ) {
+                    const errorKeys = Object.keys(error);
+                    if (errorKeys.length > 0) {
+                        return;
+                    }
+                }
+                showSnackbar("Failed to create user.", "error");
+            },
+        });
     };
-
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            setData('photo', file)
+            setData("photo", file);
             setImage(URL.createObjectURL(file));
         }
     };
@@ -61,14 +75,14 @@ const NewUser = ({open, onClose} : NewUserProps) => {
     };
 
     const handleOnClose = () => {
-        onClose()
+        onClose();
         reset();
         handleClearImage();
-        setError('name', '')
-        setError('email', '')
-        setError('password', '')
-        setError('photo', '')
-    }
+        setError("name", "");
+        setError("email", "");
+        setError("password", "");
+        setError("photo", "");
+    };
 
     return (
         <Dialog
@@ -144,7 +158,7 @@ const NewUser = ({open, onClose} : NewUserProps) => {
                             },
                         }}
                         value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                         error={!!errors.email}
                         helperText={errors.email}
                     />
@@ -160,7 +174,7 @@ const NewUser = ({open, onClose} : NewUserProps) => {
                             },
                         }}
                         value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                         error={!!errors.password}
                         helperText={errors.password}
                     />
@@ -174,16 +188,16 @@ const NewUser = ({open, onClose} : NewUserProps) => {
                         alignItems: "center",
                     }}
                 >
-                          <LoadingButton
-        loading={false}
-        type="submit"
-        loadingPosition="start"
-        startIcon={processing ? <LoadingCircle /> :  <span />}
-        sx={{ mt: 3, mb: 2 }}
-        variant="contained"
-      >
-        Create User
-      </LoadingButton>
+                    <LoadingButton
+                        loading={false}
+                        type="submit"
+                        loadingPosition="start"
+                        startIcon={processing ? <LoadingCircle /> : <span />}
+                        sx={{ mt: 3, mb: 2 }}
+                        variant="contained"
+                    >
+                        Create User
+                    </LoadingButton>
                     {/* <Button
                         
                         type="submit"

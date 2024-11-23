@@ -9,6 +9,7 @@ import LoadingCircle from "@/icons/LoadingCircle";
 import { useSnackbar } from "@/Context/SnackbarProvider";
 import { PackageDataType } from "@/PageType";
 import { DescriptionType } from "./NewPackage";
+import { ActiveInactiveStatus, Status } from "@/Data";
 
 interface EditPackageProps {
     open: boolean;
@@ -19,33 +20,47 @@ interface EditPackageProps {
 const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
     const { showSnackbar } = useSnackbar();
 
-    const { data, setData, errors, put, setError, processing, reset } =
+    const { data, setData, errors, setError, processing, reset } =
         useForm<PackageDataType>({
             name: packageData.name,
             limit_employee: packageData.limit_employee,
             max_employee: packageData.max_employee,
             status: packageData.status,
-            description: JSON.stringify(packageData.description),
+            description: packageData.description || [],
         });
 
     const [desc, setDesc] = useState<DescriptionType[]>(packageData.description)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setData("description", JSON.stringify(desc))
 
-        put("/packages/" + packageData.id, {
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            formData.append(key, key === 'description' ? JSON.stringify(desc) : value);
+        });
+
+        formData.append("description", JSON.stringify(desc));
+        formData.append("_method", "PUT");
+
+        router.post("/packages/" + packageData.id, formData, {
             onSuccess: () => {
                 handleOnClose();
                 showSnackbar("Package updated successfully.");
             },
             onError: (error: any) => {
-                if (!error?.response?.data?.errors) {
-                    console.error("Error:", error);
+                if(error.error) {
+                    return showSnackbar("Failed to create employee.", "error");
+                }else if (error && typeof error === "object" && !Array.isArray(error)) {
+                    const errorKeys = Object.keys(error);
+                    if (errorKeys.length > 0) {
+                        return;
+                    }
                 }
+                showSnackbar("Failed to update package.", "error");
             }
         });
     };
+
     const clearError = () => {
         setError("name", "");
         setError("limit_employee", "");
@@ -66,6 +81,8 @@ const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
 
     useEffect(() => {
         restageDefault();
+        setData("status", packageData.status);
+        setDesc(packageData.description)
     }, [packageData, open]);
 
     const handleChangeDesc = (index: number, value: string) => {
@@ -116,10 +133,7 @@ const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
                         onChange={(e) =>
                             setData("limit_employee", Number(e.target.value))
                         }
-                        options={[
-                            { id: 1, name: "Yes" },
-                            { id: 0, name: "No" },
-                        ]}
+                        options={Status}
                         placeholder="Select options"
                         width={300}
                     />
@@ -134,6 +148,18 @@ const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
                         }
                         error={!!errors.max_employee}
                         helperText={errors.max_employee}
+                    />
+
+                    {/* Status */}
+                    <CustomDropdown
+                        label="Select Status"
+                        value={data.status}
+                        onChange={(e) =>
+                            setData("status", Number(e.target.value))
+                        }
+                        options={ActiveInactiveStatus}
+                        placeholder="Select options"
+                        width={300}
                     />
 
                     {desc.map((item, index) => (

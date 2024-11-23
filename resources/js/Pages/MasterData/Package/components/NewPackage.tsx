@@ -31,7 +31,7 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
         useForm<PackageDataType>({
             name: "",
             limit_employee: 1,
-            max_employee: undefined,
+            max_employee: null,
             status: 1,
             description: []
         });
@@ -52,9 +52,15 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
                 showSnackbar("Package created successfully.");
             },
             onError: (error: any) => {
-                if (!error?.response?.data?.errors) {
-                    console.error("Error:", error);
+                if(error.error) {
+                    return showSnackbar("Failed to create employee.", "error");
+                }else if (error && typeof error === "object" && !Array.isArray(error)) {
+                    const errorKeys = Object.keys(error);
+                    if (errorKeys.length > 0) {
+                        return;
+                    }
                 }
+                showSnackbar("Failed to create package.", "error");
             }
         });
     };

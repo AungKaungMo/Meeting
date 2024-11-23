@@ -11,11 +11,12 @@ import {
 import { Iconify } from "@/Components/iconify";
 import { router } from "@inertiajs/react";
 import { useSnackbar } from "@/Context/SnackbarProvider";
-import { PackagePropsType } from "@/PageType";
-import EditPackage from "./EditPackage";
+import { CompanyPropsType } from "@/PageType";
+import dayjs from "dayjs";
+import EditCompany from "./EditCompany";
 import DeleteDialog from "@/Components/DeleteDialog";
 
-const PackageDataRows: React.FC<PackagePropsType> = ({ packageData, id }) => {
+const CompanyDataRows: React.FC<CompanyPropsType> = ({ companyData, id, packages }) => {
     const { showSnackbar } = useSnackbar();
 
     const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(
@@ -46,10 +47,10 @@ const PackageDataRows: React.FC<PackagePropsType> = ({ packageData, id }) => {
     };
 
     const handleDeleteAction = () => {
-        router.delete("packages/" + packageData.id, {
+        router.delete("companies/" + companyData.id, {
             onSuccess: () => {
                 handleDeleteBox();
-                showSnackbar("Package deleted successfully.");
+                showSnackbar("Company deleted successfully.");
             },
         });
     };
@@ -57,17 +58,17 @@ const PackageDataRows: React.FC<PackagePropsType> = ({ packageData, id }) => {
     return (
         <>
             <TableRow hover tabIndex={1}>
-                <TableCell>{id}.</TableCell>
+                <TableCell>{companyData.company_id}</TableCell>
 
-                <TableCell>{packageData.name}</TableCell>
-                <TableCell>
-                    {packageData.limit_employee ? "Yes" : "No"}
-                </TableCell>
-                <TableCell>{packageData.max_employee}</TableCell>
+                <TableCell>{companyData.name}</TableCell>
+                <TableCell>{companyData.short_name}</TableCell>
+                <TableCell>{companyData.package.name}</TableCell>
+                <TableCell>{dayjs.unix(companyData.expire_date)?.format('YYYY-MM-DD')}</TableCell>
+
                 <TableCell>
                     <Chip
-                        label={packageData.status ? "Active" : "Inactive"}
-                        color={packageData.status ? "primary" : "error"}
+                        label={companyData.status ? "Active" : "Inactive"}
+                        color={companyData.status ? "success" : "error"}
                     />
                 </TableCell>
 
@@ -107,10 +108,10 @@ const PackageDataRows: React.FC<PackagePropsType> = ({ packageData, id }) => {
                 </MenuList>
             </Popover>
 
-            <EditPackage open={open} onClose={handleEditBox} packageData={packageData} />
-           <DeleteDialog open={deleteOpen} onOpenChange={handleDeleteBox} onCancel={handleDeleteBox} onConfirm={handleDeleteAction} />
+            <EditCompany open={open} onClose={handleEditBox} companyData={companyData} packages={packages} />
+            <DeleteDialog open={deleteOpen} onOpenChange={handleDeleteBox} onCancel={handleDeleteBox} onConfirm={handleDeleteAction} />
         </>
     );
 };
 
-export default PackageDataRows;
+export default CompanyDataRows;

@@ -28,7 +28,8 @@ type CurrentUserType = {
     user: {
       name: string,
       email: string,
-      profile_image_url: string
+      profile_image_url: string;
+      short_name: string
     }
   }
 }
@@ -94,11 +95,11 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {props.auth?.user?.name || 'Anonymous'}
+            {props.auth?.user?.short_name || props.auth?.user?.name || 'Anonymous'}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {props.auth?.user?.email || 'anonymous@gmail.com'}
+            {props.auth?.user?.email || props.auth?.user?.name || 'anonymous@gmail.com'}
           </Typography>
         </Box>
 

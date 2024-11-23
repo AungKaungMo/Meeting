@@ -59,7 +59,7 @@ const SnackAlert = ({
             open={open}
             onClose={handleClose}
             key={vertical + horizontal}
-            autoHideDuration={3000}
+            autoHideDuration={1500}
         >
             <Alert
                 onClose={handleClose}

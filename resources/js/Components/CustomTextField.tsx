@@ -24,7 +24,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({
         <TextField
             fullWidth={fullWidth}
             label={label}
-            value={value}
+            value={value || ''}
             onChange={onChange}
             type={type}
             sx={{

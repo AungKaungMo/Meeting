@@ -75,9 +75,17 @@ const EditUser = ({ open, onClose, user }: EditUserProps) => {
                 handleOnClose();
                 showSnackbar('User updated successfully.')
             },
-            onError: (error) => {
-                console.error("Error updating user:", error);
-            },
+            onError: (error: any) => {
+                if(error.error) {
+                    return showSnackbar("Failed to create employee.", "error");
+                }else if (error && typeof error === "object" && !Array.isArray(error)) {
+                    const errorKeys = Object.keys(error);
+                    if (errorKeys.length > 0) {
+                        return;
+                    }
+                }
+                showSnackbar("Failed to update user.", "error");
+            }
         });
     };
 

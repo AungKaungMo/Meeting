@@ -23,7 +23,7 @@ export type PackagePropsType = {
 export type PackageDataType = {
     name: string;
     limit_employee: number;
-    max_employee: number | undefined;
+    max_employee: number | null;
     status: number;
     description: any;
 };

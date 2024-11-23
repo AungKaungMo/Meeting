@@ -11,7 +11,12 @@ trait FilterSortPaginate
         if ($value = $request->input("filterName")) {
             $query->where(function ($query) use ($filterableFields, $value) {
                 foreach ($filterableFields as $field) {
-                    if (is_numeric($value)) {
+                    if (str_contains($field, '.')) {
+                        [$relation, $relationField] = explode('.', $field);
+                        $query->orWhereHas($relation, function ($query) use ($relationField, $value) {
+                            $query->where($relationField, 'like', "%{$value}%");
+                        });
+                    } else if (is_numeric($value)) {
                         $query->orWhere($field, (int) $value);
                     } else {
                         $query->orWhere($field, 'like', "%{$value}%");

@@ -11,11 +11,13 @@ import { List, ListSubheader } from "@mui/material";
 export type NavContentProps = {
     data: {
         title: string;
+        type: string[];
         data: {
             path: string;
             title: string;
             icon: React.ReactNode;
             info?: React.ReactNode;
+            type: string[]
         }[];
     }[];
     slots?: {
@@ -24,6 +26,17 @@ export type NavContentProps = {
     };
     sx?: SxProps<Theme>;
 };
+
+type CurrentUserType = {
+    auth: {
+      user: {
+        name: string,
+        email: string,
+        profile_image_url: string,
+        type: string
+      }
+    }
+  }
 
 export function NavDesktop({
     sx,
@@ -100,10 +113,11 @@ export function NavMobile({
         </Drawer>
     );
 }
-
 // ----------------------------------------------------------------------
 
 export function NavContent({ data, slots, sx }: NavContentProps) {
+
+    const { props } = usePage<CurrentUserType>();
 
     return (
         <>
@@ -127,7 +141,7 @@ export function NavContent({ data, slots, sx }: NavContentProps) {
                         <List
                             key={index}
                             subheader={
-                                main.title && (
+                                main.title && main.type.includes(props.auth.user.type) && (
                                 <ListSubheader
                                     component="div"
                                     sx={{
@@ -140,7 +154,7 @@ export function NavContent({ data, slots, sx }: NavContentProps) {
                                 )
                             }
                         >
-                            {main.data?.map((item, ind) => (
+                            {main.data?.map((item, ind) => item.type.includes(props.auth.user.type) && (
                                 <ListItem
                                     disableGutters
                                     disablePadding
