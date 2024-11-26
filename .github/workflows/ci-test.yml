@@ -14,7 +14,11 @@ jobs:
           MYSQL_DATABASE: meet
         ports:
           - 3306:3306
-        options: --health-cmd='mysqladmin ping -h localhost' --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -P 3306 --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - uses: actions/checkout@v3
