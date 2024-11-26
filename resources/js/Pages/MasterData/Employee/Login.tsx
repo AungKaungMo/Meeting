@@ -49,7 +49,7 @@ const Login = () => {
             }}
         >
             <Card
-                className="lg:min-w-[1200px] md:w-[600px]  lg:min-h-[70vh]"
+                className="lg:min-w-[1000px] lg:pt-0 pt-9 md:w-[600px]  lg:min-h-[70vh]"
                 sx={{
                     display: "flex",
                     overflow: "hidden",

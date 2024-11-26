@@ -5,24 +5,24 @@ const icon = (name: string) => (
 );
 
 export const navData = [
-    {
-      title: "Dashboard",
-      type: ['owner', 'client'],
-      data: [
-        {
-          title: 'Dashboard',
-          path: '/dashboard',
-          icon: icon('ic-analytics'),
-          type: ['owner', 'client'],
-        },
-        {
-          title: 'Product',
-          path: '/products',
-          icon: icon('ic-cart'),
-          type: ['owner'],
-        },
-      ]
-    }, 
+    // {
+    //   title: "Dashboard",
+    //   type: ['owner', 'client'],
+    //   data: [
+    //     {
+    //       title: 'Dashboard',
+    //       path: '/dashboard',
+    //       icon: icon('ic-analytics'),
+    //       type: ['owner', 'client'],
+    //     },
+    //     {
+    //       title: 'Product',
+    //       path: '/products',
+    //       icon: icon('ic-cart'),
+    //       type: ['owner'],
+    //     },
+    //   ]
+    // }, 
     {
       title: "Meeting",
       type: ['employee'],

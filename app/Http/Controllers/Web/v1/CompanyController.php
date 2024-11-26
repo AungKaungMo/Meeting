@@ -163,6 +163,6 @@ class CompanyController extends Controller
     {
         Auth::guard('company')->logout();
 
-        return redirect()->route('company.login');
+        return redirect()->route('company.loginForm');
     }
 }

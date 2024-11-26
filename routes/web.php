@@ -81,6 +81,7 @@ Route::middleware(['auth:company'])->group(function () {
     Route::post('/employees/import', [EmployeeController::class, 'importEmployees']);
 });
 
+Route::redirect('/', '/employee/login');
 //EMPLOYEE
 Route::get('/employee/login', [EmployeeController::class, 'showLoginForm'])->name('employee.loginForm');
 Route::post('/employee/login', [EmployeeController::class, 'login'])->name('employee.login');
@@ -100,10 +101,6 @@ Route::middleware(['auth:employee'])->group(function () {
     Route::resource('/meeting-minutes', MeetingMinuteController::class);
     Route::any('/meeting-image-upload', [MeetingMinuteController::class, 'imageUpload'])->name('image.upload');
 });
-
-// Route::middleware(['auth:employee'])->group(function () {
-
-// });
 
 Route::fallback(function () {
     return Inertia::render('PageNotFound');

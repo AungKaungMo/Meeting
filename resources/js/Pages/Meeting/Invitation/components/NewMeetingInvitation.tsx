@@ -53,7 +53,7 @@ const NewMeetingInvitation = ({
             onError: (error: any) => {
                 if (error.error) {
                     return showSnackbar(
-                        "Failed to create meeting invitation.",
+                        error.error || "Failed to create meeting invitation.",
                         "error"
                     );
                 } else if (

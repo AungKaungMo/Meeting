@@ -57,19 +57,23 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
   );
 
   const { props } = usePage<CurrentUserType>()
-  console.log(props.auth, 'fei')
 
   const handleLogout : FormEventHandler = (e) => {
     e.preventDefault();
     const current_type = props.auth.user.type;
 
+    // console.log(current_type);
+    // return
     switch(current_type) {
       case "client" : 
         post(route('company.logout'))
+        break;
       case "employee" :
         post(route('employee.logout'))
+        break;
       case "owner" : 
         post(route('logout'))
+        break;
     }
   }
    return (

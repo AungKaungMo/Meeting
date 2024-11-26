@@ -86,6 +86,27 @@ class MeetingInvitationController extends Controller
         DB::beginTransaction();
         try {
 
+            $from_time = $request->input('from');
+            $to_time = $request->input('to');
+
+            if ($from_time > $to_time) {
+                return back()->withErrors(['error' => 'From time is greater than to time.'])->withInput();
+            }
+            $available = MeetingInvitation::where('room_location_id', $request->room_location_id)
+                ->where('meeting_date', $request->meeting_date)
+                ->where('status', '!=', 2) //If meeting is cancel , it still valid.
+                ->where(function ($query) use ($from_time, $to_time) {
+                    $query->whereBetween('from', [$from_time, $to_time])
+                        ->orWhereBetween('to', [$from_time, $to_time])
+                        ->orWhere(function ($q) use ($from_time, $to_time) {
+                            $q->where('from', '<=', $to_time)
+                                ->where('to', '>=', $from_time);
+                        });
+                })->exists();
+
+            if ($available) {
+                return back()->withErrors(['error' => 'The meeting time overlaps with an existing meeting.'])->withInput();
+            }
 
             $meeting = MeetingInvitation::firstOrCreate([
                 'title' => $request->title,
