@@ -69,25 +69,6 @@ class PackageController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -115,9 +96,6 @@ class PackageController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         try {
@@ -128,7 +106,7 @@ class PackageController extends Controller
 
             return redirect()->route('packages.index')->with('success', 'Package deleted successfully.');
         } catch (\Throwable $th) {
-            dd($th->getMessage());
+            return back()->withErrors(['error' => 'Failed to delete packages: ' . $th->getMessage()])->withInput();
         }
     }
 }
