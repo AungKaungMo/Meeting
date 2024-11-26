@@ -22,7 +22,7 @@ class DepartmentImport
                         'code' => generateUniqueId($row[1], Department::class, 'code'),
                         'company_id' => $row[2] ?? $id,
                         'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now()
+                        'updated_at' => Carbon::now(),
                     ];
                 })->toArray();
 

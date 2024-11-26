@@ -11,6 +11,7 @@ use Inertia\Inertia;
 class RegionAndStateController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -26,7 +27,7 @@ class RegionAndStateController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch regions and states: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch regions and states: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -44,7 +45,8 @@ class RegionAndStateController extends Controller
             return redirect()->route('region-states.index')->with('success', 'Regions and States created successfully.');
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to create regions and states: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to create regions and states: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -58,12 +60,12 @@ class RegionAndStateController extends Controller
             $region_states = RegionState::findOrFail($id);
             $region_states->update([
                 'name' => $request->name,
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             return redirect()->route('region-states.index')->with('success', 'Regions and States updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create regions and states: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create regions and states: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -77,7 +79,7 @@ class RegionAndStateController extends Controller
 
             return redirect()->route('region-states.index')->with('success', 'Regions and States deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete regions and states: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete regions and states: '.$th->getMessage()])->withInput();
         }
     }
 }

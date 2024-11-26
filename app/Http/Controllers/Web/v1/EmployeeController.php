@@ -10,7 +10,6 @@ use App\Providers\RouteServiceProvider;
 use App\Traits\FilterSortPaginate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
@@ -20,6 +19,7 @@ class EmployeeController extends Controller
      * Display a listing of the resource.
      */
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -27,8 +27,7 @@ class EmployeeController extends Controller
                 ->with('department:id,name')
                 ->whereHas(
                     'department',
-                    fn($query) =>
-                    $query->where('company_id', $request->user()->id)
+                    fn ($query) => $query->where('company_id', $request->user()->id)
                 );
 
             $filterFields = ['name', 'employee_id', 'email', 'phone', 'role', 'department.name'];
@@ -47,7 +46,7 @@ class EmployeeController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch employees: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch employees: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -62,7 +61,7 @@ class EmployeeController extends Controller
 
         try {
             $name = explode(' ', $request->name);
-            $initialName = strtoupper(implode('', array_map(fn($word) => $word[0], $name)));
+            $initialName = strtoupper(implode('', array_map(fn ($word) => $word[0], $name)));
 
             $emp_id = generateUniqueId($initialName, Employee::class, 'employee_id');
 
@@ -74,12 +73,12 @@ class EmployeeController extends Controller
                 'password' => Hash::make('employee_pass_123456'),
                 'type' => 'employee',
                 'role' => $request->role,
-                'department_id' => $request->department_id
+                'department_id' => $request->department_id,
             ]);
 
             return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create employee: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create employee: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -100,13 +99,14 @@ class EmployeeController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'role' => $request->role,
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to create employee: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to create employee: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -120,14 +120,14 @@ class EmployeeController extends Controller
 
             return redirect()->route('employees.index')->with('success', 'Employee deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete employee: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete employee: '.$th->getMessage()])->withInput();
         }
     }
 
     public function importEmployees(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,xlsx,xls'
+            'file' => 'required|file|mimes:csv,xlsx,xls',
         ]);
 
         try {
@@ -141,12 +141,12 @@ class EmployeeController extends Controller
                 default => throw new \InvalidArgumentException("Unsupported file type: {$extension}")
             };
 
-            $importer = new EmployeeImport();
+            $importer = new EmployeeImport;
             $importer->import($file->getRealPath(), $extension);
 
             return redirect()->route('employees.index')->with('success', 'Employee imported successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Import failed: ' . $th->getMessage()]);
+            return back()->withErrors(['error' => 'Import failed: '.$th->getMessage()]);
         }
     }
 
@@ -159,7 +159,7 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'employee_id' => 'required|string|max:255',
-            'password' => 'required|string|max:255'
+            'password' => 'required|string|max:255',
         ]);
 
         try {
@@ -181,6 +181,7 @@ class EmployeeController extends Controller
                 $request->session()->regenerate();
                 if ($employee->first_time_login === 1) {
                     $request->session()->put('change_password', true);
+
                     return redirect()->route('employee.changePasswordForm');
                 }
 
@@ -188,7 +189,7 @@ class EmployeeController extends Controller
                 // return redirect(RouteServiceProvider::HOME);
             }
 
-            return back()->withErrors(['employee_id' => "These credentials do not match our records."]);
+            return back()->withErrors(['employee_id' => 'These credentials do not match our records.']);
         } catch (\Throwable $th) {
             return back()->withErrors(['error' => $th->getMessage()]);
         }
@@ -208,7 +209,7 @@ class EmployeeController extends Controller
     {
         $request->validate([
             'new_password' => 'required|string|min:6|max:255',
-            'confirm_password' => 'required|string|min:6|max:255'
+            'confirm_password' => 'required|string|min:6|max:255',
         ]);
 
         try {

@@ -3,8 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;;
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
@@ -42,7 +41,7 @@ class UserControllerTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password123',
-            'photo' => null
+            'photo' => null,
         ];
 
         $response = $this->actingAs($user)->post(route('users.store'), $data);
@@ -63,7 +62,7 @@ class UserControllerTest extends TestCase
         $data = [
             'name' => 'Updated Name',
             'email' => 'updated@example.com',
-            'photo' => null
+            'photo' => null,
         ];
 
         $response = $this->actingAs(User::first())->put(route('users.update', $user->id), $data);

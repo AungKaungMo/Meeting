@@ -10,6 +10,7 @@ use Tests\TestCase;
 class PackageControllerTest extends TestCase
 {
     use RefreshDatabase;
+
     /**
      * A basic unit test example.
      */

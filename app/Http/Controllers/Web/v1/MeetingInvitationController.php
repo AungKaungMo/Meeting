@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Web\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\MeetingAttendance;
@@ -17,6 +16,7 @@ use Inertia\Inertia;
 class MeetingInvitationController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -27,7 +27,7 @@ class MeetingInvitationController extends Controller
                     'created_by:id,name',
                     'room_location:id,name',
                     'departments:id,name',
-                    'participants:id,name'
+                    'participants:id,name',
                 ]);
 
             if ($request->user()->role === 'employee') {
@@ -46,8 +46,7 @@ class MeetingInvitationController extends Controller
             $departmentId = Department::findOrFail($request->user()->department_id);
             $employees = Employee::select('id', 'name', 'department_id')->whereHas(
                 'department',
-                fn($query) =>
-                $query->where('company_id', $departmentId?->company_id)
+                fn ($query) => $query->where('company_id', $departmentId?->company_id)
             )->where('status', 1)
                 ->get();
 
@@ -65,7 +64,8 @@ class MeetingInvitationController extends Controller
             ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to fetch employees: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to fetch employees: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -123,25 +123,27 @@ class MeetingInvitationController extends Controller
 
             if ($request->invited_departments) {
                 $meeting->invited_departments()->createMany(
-                    array_map(fn($departmentId) => ['department_id' => $departmentId], $request->invited_departments)
+                    array_map(fn ($departmentId) => ['department_id' => $departmentId], $request->invited_departments)
                 );
             }
 
             if ($request->participants) {
                 $meeting->invited_participants()->createMany(
-                    array_map(fn($participantId) => ['employee_id' => $participantId], $request->participants)
+                    array_map(fn ($participantId) => ['employee_id' => $participantId], $request->participants)
                 );
             }
 
             DB::commit();
+
             return redirect()->route('meeting-invitations.index')->with('success', 'Meeting Invitation created successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to create meeting invitation: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to create meeting invitation: '.$th->getMessage()])->withInput();
         }
     }
 
-    public function update(Request $request, String $id)
+    public function update(Request $request, string $id)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -154,9 +156,9 @@ class MeetingInvitationController extends Controller
             'participants' => 'required|array',
             'host_by_id' => 'required',
             'status' => 'required|in:0,1,2',
-            'reason' => 'required_if:status,2'
+            'reason' => 'required_if:status,2',
         ], [
-            'reason.required_if' => 'The reason field is required when status is canceled.'
+            'reason.required_if' => 'The reason field is required when status is canceled.',
         ]);
 
         DB::beginTransaction();
@@ -165,7 +167,7 @@ class MeetingInvitationController extends Controller
 
             if ($meeting->status === 1) {
                 return back()->withErrors(['error' => 'Meeting invitation is already confirmed.'])->withInput();
-            } else if ($meeting->status === 2) {
+            } elseif ($meeting->status === 2) {
                 return back()->withErrors(['error' => 'Meeting invitation is already canceled.'])->withInput();
             }
 
@@ -186,14 +188,14 @@ class MeetingInvitationController extends Controller
             if ($request->invited_departments) {
                 $meeting->invited_departments()->delete();
                 $meeting->invited_departments()->createMany(
-                    array_map(fn($departmentId) => ['department_id' => $departmentId], $request->invited_departments)
+                    array_map(fn ($departmentId) => ['department_id' => $departmentId], $request->invited_departments)
                 );
             }
 
             if ($request->participants) {
                 $meeting->invited_participants()->delete();
                 $meeting->invited_participants()->createMany(
-                    array_map(fn($participantId) => ['employee_id' => $participantId], $request->participants)
+                    array_map(fn ($participantId) => ['employee_id' => $participantId], $request->participants)
                 );
             }
 
@@ -204,13 +206,14 @@ class MeetingInvitationController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('meeting-invitations.index')->with('success', 'Meeting Invitation updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to update meeting invitation: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to update meeting invitation: '.$th->getMessage()])->withInput();
         }
     }
 
-    public function destroy(String $id)
+    public function destroy(string $id)
     {
         DB::beginTransaction();
         try {
@@ -222,10 +225,12 @@ class MeetingInvitationController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('meeting-invitation.index')->with('success', 'Meeting Invitation deleted successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to delete meeting invitation: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to delete meeting invitation: '.$th->getMessage()])->withInput();
         }
     }
 }

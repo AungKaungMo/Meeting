@@ -12,6 +12,7 @@ use Inertia\Inertia;
 class DepartmentController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -27,7 +28,7 @@ class DepartmentController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch departments: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch departments: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -44,12 +45,12 @@ class DepartmentController extends Controller
                 'name' => $request->name,
                 'short_name' => $request->short_name,
                 'company_id' => $request->user()->id,
-                'code' => $deptId
+                'code' => $deptId,
             ]);
 
             return redirect()->route('departments.index')->with('success', 'Department created successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create department: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create department: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -65,13 +66,14 @@ class DepartmentController extends Controller
             $department->update([
                 'name' => $request->name,
                 'short_name' => $request->short_name,
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             return redirect()->route('departments.index')->with('success', 'Department updated successfully.');
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to create department: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to create department: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -85,14 +87,14 @@ class DepartmentController extends Controller
 
             return redirect()->route('departments.index')->with('success', 'Department deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete department: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete department: '.$th->getMessage()])->withInput();
         }
     }
 
     public function importDepartments(Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,xlsx,xls'
+            'file' => 'required|file|mimes:csv,xlsx,xls',
         ]);
 
         try {
@@ -106,13 +108,14 @@ class DepartmentController extends Controller
                 default => throw new \InvalidArgumentException("Unsupported file type: {$extension}")
             };
 
-            $importer = new DepartmentImport();
+            $importer = new DepartmentImport;
             $importer->import($file->getRealPath(), $extension, $request->user()->id);
 
             return redirect()->route('departments.index')->with('success', 'Department imported successfully.');
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Import failed: ' . $th->getMessage()]);
+
+            return back()->withErrors(['error' => 'Import failed: '.$th->getMessage()]);
         }
     }
 }

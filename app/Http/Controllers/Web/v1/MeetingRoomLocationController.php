@@ -13,6 +13,7 @@ use Inertia\Inertia;
 class MeetingRoomLocationController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -33,7 +34,7 @@ class MeetingRoomLocationController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch room locations: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch room locations: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -42,7 +43,7 @@ class MeetingRoomLocationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'region_state_id' => 'required',
-            'township_id' => 'required'
+            'township_id' => 'required',
         ]);
 
         try {
@@ -50,13 +51,14 @@ class MeetingRoomLocationController extends Controller
                 'name' => $request->name,
                 'region_state_id' => $request->region_state_id,
                 'township_id' => $request->township_id,
-                'company_id' => $request->user()->id
+                'company_id' => $request->user()->id,
             ]);
 
             return redirect()->route('room-locations.index')->with('success', 'Room Location created successfully.');
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to create room location: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to create room location: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -65,7 +67,7 @@ class MeetingRoomLocationController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'region_state_id' => 'required',
-            'township_id' => 'required'
+            'township_id' => 'required',
         ]);
 
         try {
@@ -74,12 +76,12 @@ class MeetingRoomLocationController extends Controller
                 'name' => $request->name,
                 'region_state_id' => $request->region_state_id,
                 'township_id' => $request->township_id,
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             return redirect()->route('room-locations.index')->with('success', 'Room Location updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create room location: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create room location: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -93,7 +95,7 @@ class MeetingRoomLocationController extends Controller
 
             return redirect()->route('room-locations.index')->with('success', 'Room Location deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete room location: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete room location: '.$th->getMessage()])->withInput();
         }
     }
 }

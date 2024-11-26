@@ -8,7 +8,7 @@ trait FilterSortPaginate
 {
     public function filterSortPaginate($query, Request $request, array $filterableFields = [], array $defaultSort = ['id', 'desc'])
     {
-        if ($value = $request->input("filterName")) {
+        if ($value = $request->input('filterName')) {
             $query->where(function ($query) use ($filterableFields, $value) {
                 foreach ($filterableFields as $field) {
                     if (str_contains($field, '.')) {
@@ -16,7 +16,7 @@ trait FilterSortPaginate
                         $query->orWhereHas($relation, function ($query) use ($relationField, $value) {
                             $query->where($relationField, 'like', "%{$value}%");
                         });
-                    } else if (is_numeric($value)) {
+                    } elseif (is_numeric($value)) {
                         $query->orWhere($field, (int) $value);
                     } else {
                         $query->orWhere($field, 'like', "%{$value}%");
@@ -30,6 +30,7 @@ trait FilterSortPaginate
         $query->orderBy($sort, $direction);
 
         $per_page = (int) $request->input('per_page', 10);
+
         return $query->paginate($per_page)->appends($request->except('page'));
     }
 }

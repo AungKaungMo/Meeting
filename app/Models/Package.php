@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
+
     protected $hidden = ['created_at', 'updated_at'];
+
     protected $casts = [
-        'description' => 'array'
+        'description' => 'array',
     ];
 }

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class MeetingAttendance extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
+
     protected $hidden = ['created_at', 'updated_at'];
 
     public function meeting_invitation()

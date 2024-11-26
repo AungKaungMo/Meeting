@@ -41,7 +41,7 @@ use Inertia\Inertia;
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     //USER
     Route::resource('/users', UserController::class);
@@ -63,14 +63,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
 //COMPANY
 Route::get('/company/login', [CompanyController::class, 'showLoginForm'])->name('company.loginForm');
 Route::post('/company/login', [CompanyController::class, 'login'])->name('company.login');
 Route::post('/company/logout', [CompanyController::class, 'logout'])->name('company.logout');
 
 Route::middleware(['auth:company'])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
 
     Route::resource('/departments', DepartmentController::class);
     Route::post('/departments/import', [DepartmentController::class, 'importDepartments']);
@@ -106,5 +105,4 @@ Route::fallback(function () {
     return Inertia::render('PageNotFound');
 });
 
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

@@ -35,7 +35,7 @@ class CompanyController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch company: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch company: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -46,7 +46,7 @@ class CompanyController extends Controller
             'short_name' => 'required|string|max:255',
             'profile_image_url' => 'nullable|image|max:2048',
             'expire_date' => 'required|numeric|min:0',
-            'package_id' => 'required'
+            'package_id' => 'required',
         ]);
 
         try {
@@ -66,12 +66,12 @@ class CompanyController extends Controller
                 'expire_date' => $request->expire_date,
                 'package_id' => $request->package_id,
                 'type' => 'client',
-                'company_id' => $companyId
+                'company_id' => $companyId,
             ]);
 
             return redirect()->route('companies.index')->with('success', 'Company created successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create company: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create company: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -82,7 +82,7 @@ class CompanyController extends Controller
                 'name' => 'required|string|max:255',
                 'short_name' => 'required|string|max:255',
                 'expire_date' => 'required|numeric|min:0',
-                'package_id' => 'required'
+                'package_id' => 'required',
             ]);
 
             $path = null;
@@ -99,7 +99,7 @@ class CompanyController extends Controller
                     Storage::disk('public')->delete($company->profile_image_url);
                 }
 
-                $photoPath = ($request->changeImage && !$request->hasFile('profile_image_url'))
+                $photoPath = ($request->changeImage && ! $request->hasFile('profile_image_url'))
                     ? null
                     : ($path ?? $company->profile_image_url);
 
@@ -115,7 +115,7 @@ class CompanyController extends Controller
 
             return redirect()->route('companies.index')->with('success', 'Company updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to update company: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to update company: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -129,7 +129,7 @@ class CompanyController extends Controller
 
             return redirect()->route('companies.index')->with('success', 'Company deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete company: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete company: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -142,7 +142,7 @@ class CompanyController extends Controller
     {
         $request->validate([
             'company_id' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         try {
@@ -150,10 +150,11 @@ class CompanyController extends Controller
 
             if (Auth::guard('company')->attempt($credentials)) {
                 $request->session()->regenerate();
+
                 return redirect(RouteServiceProvider::HOME);
             }
 
-            return back()->withErrors(['company_id' => "These credentials do not match our records."]);
+            return back()->withErrors(['company_id' => 'These credentials do not match our records.']);
         } catch (\Throwable $th) {
             return back()->withErrors(['error' => $th->getMessage()]);
         }

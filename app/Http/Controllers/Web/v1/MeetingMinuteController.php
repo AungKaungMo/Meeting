@@ -12,6 +12,7 @@ use Inertia\Inertia;
 class MeetingMinuteController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -53,7 +54,7 @@ class MeetingMinuteController extends Controller
                 'total' => $meeting_minutes->total(),
                 'per_page' => $meeting_minutes->perPage(),
                 'current_page' => $meeting_minutes->currentPage(),
-                'data' => $mapData
+                'data' => $mapData,
             ];
 
             return Inertia::render('Meeting/Minute/MeetingMinuteList', [
@@ -64,7 +65,8 @@ class MeetingMinuteController extends Controller
             ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to fetch meeting minutes: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to fetch meeting minutes: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -74,10 +76,10 @@ class MeetingMinuteController extends Controller
             $meeting_minute = MeetingMinute::findOrFail($id);
 
             return Inertia::render('Meeting/Minute/WriteMinute', [
-                'meeting_minute' => $meeting_minute
+                'meeting_minute' => $meeting_minute,
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch meeting minute: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch meeting minute: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -85,7 +87,7 @@ class MeetingMinuteController extends Controller
     {
         $request->validate([
             'status' => 'required|in:0,1,2',
-            'detail' => 'required_if:status,1'
+            'detail' => 'required_if:status,1',
         ], [
             'pic_id.required_if' => 'Detail is required when status is confirmed.',
         ]);
@@ -98,9 +100,10 @@ class MeetingMinuteController extends Controller
                 'updated_by_id' => $request->user()->id,
                 'status' => $request->status,
             ]);
+
             return redirect()->route('meeting-minutes.index')->with('success', 'Meeting Minute updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to update meeting minute: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to update meeting minute: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -118,12 +121,12 @@ class MeetingMinuteController extends Controller
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $path = $request->file('image')->store('meeting-images', 'public');
 
-            $res = array(
+            $res = [
                 'success' => 1,
-                'file' => (object) array(
-                    'url' => Storage::url($path)
-                )
-            );
+                'file' => (object) [
+                    'url' => Storage::url($path),
+                ],
+            ];
 
             return response()->json($res);
         }

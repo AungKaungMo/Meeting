@@ -13,6 +13,7 @@ use Inertia\Inertia;
 class MeetingAttendanceController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -25,7 +26,7 @@ class MeetingAttendanceController extends Controller
                     'pic:id,name',
                     'attendance_participants' => function ($query) {
                         $query->select('employees.id', 'employees.name', 'meeting_attendance_participants.employee_id', 'meeting_attendance_participants.status');
-                    }
+                    },
                 ]);
 
             if ($request->user()->role === 'employee') {
@@ -49,7 +50,7 @@ class MeetingAttendanceController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch meeting attendances: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch meeting attendances: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -70,15 +71,15 @@ class MeetingAttendanceController extends Controller
             $attendance->update([
                 'status' => $request->status,
                 'pic_id' => $request->pic_id,
-                'updated_by_id' => $request->user()->id
+                'updated_by_id' => $request->user()->id,
             ]);
 
             if ($request->attendance_participants) {
                 $attendance->attendances()->delete();
                 $attendance->attendances()->createMany(
-                    array_map(fn($participant) => [
+                    array_map(fn ($participant) => [
                         'employee_id' => $participant['employee_id'],
-                        'status' => $participant['status']
+                        'status' => $participant['status'],
                     ], $request->attendance_participants)
                 );
             }
@@ -88,14 +89,15 @@ class MeetingAttendanceController extends Controller
             }
 
             DB::commit();
+
             return redirect()->route('meeting-attendances.index')->with('success', 'Meeting Attendance keep successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to keep meeting attendances: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to keep meeting attendances: '.$th->getMessage()])->withInput();
         }
     }
-
 
     public function destroy(string $id)
     {

@@ -49,7 +49,7 @@ return [
             'driver' => 'session',
             'provider' => 'employees',
             'session_key' => 'auth_employee',
-        ]
+        ],
     ],
 
     /*
@@ -81,7 +81,7 @@ return [
         'employees' => [
             'driver' => 'eloquent',
             'model' => App\Models\Employee::class,
-        ]
+        ],
 
         // 'users' => [
         //     'driver' => 'database',

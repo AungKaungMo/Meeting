@@ -18,11 +18,14 @@ class EmployeeImport
             ->each(function ($rows) {
                 $data = collect($rows)->map(function ($row) {
                     $name = explode(' ', $row[0]);
-                    $initialName = strtoupper(implode('', array_map(fn($word) => $word[0], $name)));
+                    $initialName = strtoupper(implode('', array_map(fn ($word) => $word[0], $name)));
                     $emp_id = generateUniqueId($initialName, Employee::class, 'employee_id');
 
                     $department = Department::where('code', $row[3])->select('id')->first();
-                    if (!$department) return;
+                    if (! $department) {
+                        return;
+                    }
+
                     return [
                         'name' => $row[0],
                         'employee_id' => $emp_id,

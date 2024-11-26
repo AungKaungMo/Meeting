@@ -8,7 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticateable;
 class Company extends Authenticateable
 {
     use HasFactory;
+
     protected $guarded = [];
+
     protected $hidden = ['created_at', 'updated_at'];
 
     public function package()
@@ -20,11 +22,11 @@ class Company extends Authenticateable
     {
         $timestamp = now()->timestamp;
         $newName = strtoupper(str_replace(' ', '', $shortName));
-        $companyId = $newName . '-' . substr(hash('sha256', $shortName . $timestamp), 0, 6);
+        $companyId = $newName.'-'.substr(hash('sha256', $shortName.$timestamp), 0, 6);
 
         while (self::where('company_id', $companyId)->exists()) {
             $timestamp = now()->timestamp;
-            $companyId = $newName . '-' . substr(hash('sha256', $shortName . $timestamp), 0, 6);
+            $companyId = $newName.'-'.substr(hash('sha256', $shortName.$timestamp), 0, 6);
         }
 
         return $companyId;

@@ -11,6 +11,7 @@ use Inertia\Inertia;
 class PackageController extends Controller
 {
     use FilterSortPaginate;
+
     /**
      * Display a listing of the resource.
      */
@@ -65,7 +66,7 @@ class PackageController extends Controller
 
             return redirect()->route('packages.index')->with('success', 'Package created successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create package: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create package: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -87,12 +88,12 @@ class PackageController extends Controller
                 'limit_employee' => $request->limit_employee,
                 'max_employee' => $request->max_employee,
                 'description' => json_decode($request->description, true),
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             return redirect()->route('packages.index')->with('success', 'Package updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create package: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create package: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -106,7 +107,7 @@ class PackageController extends Controller
 
             return redirect()->route('packages.index')->with('success', 'Package deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete packages: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete packages: '.$th->getMessage()])->withInput();
         }
     }
 }

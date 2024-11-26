@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Township;
 use App\Models\RegionState;
+use App\Models\Township;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -20,7 +20,7 @@ class TownshipControllerTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('townships.index'));
         $response->assertStatus(200)
-            ->assertInertia(fn($inertia) => $inertia->has('townships.data'));
+            ->assertInertia(fn ($inertia) => $inertia->has('townships.data'));
     }
 
     public function test_store_creates_new_township()

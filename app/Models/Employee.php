@@ -8,7 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticateable;
 class Employee extends Authenticateable
 {
     use HasFactory;
+
     protected $guarded = [];
+
     protected $hidden = ['created_at', 'updated_at'];
 
     public function department()

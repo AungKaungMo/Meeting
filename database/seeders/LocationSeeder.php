@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\RegionState;
 use App\Models\Township;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class LocationSeeder extends Seeder
@@ -74,8 +73,8 @@ class LocationSeeder extends Seeder
                     'Kanii',
                     'Khampat',
                     'Myothitt',
-                    'Pansaung'
-                ]
+                    'Pansaung',
+                ],
             ],
             [
                 'name' => 'Tanintharyi Region',
@@ -95,7 +94,7 @@ class LocationSeeder extends Seeder
                     'Palauk',
                     'Khamaukgyi',
                     'Karathuri',
-                    'Pyigyimandaing'
+                    'Pyigyimandaing',
                 ],
             ],
             [
@@ -159,7 +158,7 @@ class LocationSeeder extends Seeder
                     'Gangaw',
                     'Tilin',
                     'Saw',
-                    'Kyaukhtu'
+                    'Kyaukhtu',
                 ],
             ],
             [
@@ -194,7 +193,7 @@ class LocationSeeder extends Seeder
                     'Thazi',
                     'Wundwin',
                     'Tagaung',
-                    'Ngathayauk'
+                    'Ngathayauk',
                 ],
             ],
             [
@@ -211,7 +210,7 @@ class LocationSeeder extends Seeder
                     'Kyaikto',
                     'Bilin',
                     'Lamine',
-                    'Kyaikkhami'
+                    'Kyaikkhami',
                 ],
             ],
             [
@@ -235,7 +234,7 @@ class LocationSeeder extends Seeder
                     'Gaw',
                     'Taungpyoletwe',
                     'Maei',
-                    'Kyeintali'
+                    'Kyeintali',
                 ],
             ],
             [
@@ -286,7 +285,7 @@ class LocationSeeder extends Seeder
                     'Dagon',
                     'Bahan',
                     'Seikkan',
-                    'Tada'
+                    'Tada',
                 ],
             ],
             [
@@ -318,7 +317,7 @@ class LocationSeeder extends Seeder
                     'kengtaung',
                     'Homane',
                     'Minenaung',
-                    'Panglong'
+                    'Panglong',
                 ],
             ],
             [
@@ -352,7 +351,7 @@ class LocationSeeder extends Seeder
                     'Tamoenye',
                     'Monekoe',
                     'Manhero',
-                    'Namtit'
+                    'Namtit',
                 ],
             ],
             [
@@ -374,7 +373,7 @@ class LocationSeeder extends Seeder
                     'Minekoke',
                     'Moneparkyin',
                     'Tongtar',
-                    'Mineyu'
+                    'Mineyu',
                 ],
             ],
             [
@@ -410,7 +409,7 @@ class LocationSeeder extends Seeder
                     'Ngayokekaung',
                     'Hainggyikyun',
                     'Ahmar',
-                    'Pyinsalu'
+                    'Pyinsalu',
                 ],
             ],
             [
@@ -435,7 +434,7 @@ class LocationSeeder extends Seeder
                 foreach ($location['townships'] as $township) {
                     Township::create([
                         'name' => $township,
-                        'region_state_id' => $region_state->id
+                        'region_state_id' => $region_state->id,
                     ]);
                 }
             }

@@ -29,7 +29,7 @@ class RegionAndStateControllerTest extends TestCase
 
         $data = [
             'name' => 'New Region',
-            'status' => 1
+            'status' => 1,
         ];
 
         $response = $this->actingAs($user)->post(route('region-states.store'), $data);
@@ -45,7 +45,7 @@ class RegionAndStateControllerTest extends TestCase
 
         $data = [
             'name' => 'Updated Region',
-            'status' => 1
+            'status' => 1,
         ];
 
         $response = $this->actingAs($user)->put(route('region-states.update', $regionState->id), $data);

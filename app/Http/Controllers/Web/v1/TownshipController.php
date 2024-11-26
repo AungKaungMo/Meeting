@@ -12,6 +12,7 @@ use Inertia\Inertia;
 class TownshipController extends Controller
 {
     use FilterSortPaginate;
+
     public function index(Request $request)
     {
         try {
@@ -30,7 +31,7 @@ class TownshipController extends Controller
                 'filter' => $request->input('filterName'),
             ]);
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to fetch townships: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to fetch townships: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -38,7 +39,7 @@ class TownshipController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'region_state_id' => 'required'
+            'region_state_id' => 'required',
         ]);
 
         try {
@@ -50,7 +51,8 @@ class TownshipController extends Controller
             return redirect()->route('townships.index')->with('success', 'Township created successfully.');
         } catch (\Throwable $th) {
             dd($th->getMessage());
-            return back()->withErrors(['error' => 'Failed to create township: ' . $th->getMessage()])->withInput();
+
+            return back()->withErrors(['error' => 'Failed to create township: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -58,7 +60,7 @@ class TownshipController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'region_state_id' => 'required'
+            'region_state_id' => 'required',
         ]);
 
         try {
@@ -66,12 +68,12 @@ class TownshipController extends Controller
             $townships->update([
                 'name' => $request->name,
                 'region_state_id' => $request->region_state_id,
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             return redirect()->route('townships.index')->with('success', 'Township updated successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to create township: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to create township: '.$th->getMessage()])->withInput();
         }
     }
 
@@ -85,7 +87,7 @@ class TownshipController extends Controller
 
             return redirect()->route('townships.index')->with('success', 'Township deleted successfully.');
         } catch (\Throwable $th) {
-            return back()->withErrors(['error' => 'Failed to delete township: ' . $th->getMessage()])->withInput();
+            return back()->withErrors(['error' => 'Failed to delete township: '.$th->getMessage()])->withInput();
         }
     }
 }

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Traits\FilterSortPaginate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use App\Traits\FilterSortPaginate;
 
 class UserController extends Controller
 {
@@ -81,7 +81,7 @@ class UserController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email,' . $id,
+                'email' => 'required|email|unique:users,email,'.$id,
             ]);
 
             $path = null;
@@ -98,7 +98,7 @@ class UserController extends Controller
                     Storage::disk('public')->delete($user->profile_image_url);
                 }
 
-                $photoPath = $request->changeImage && !$request->hasFile('photo') ? null : ($path ?? $user->profile_image_url);
+                $photoPath = $request->changeImage && ! $request->hasFile('photo') ? null : ($path ?? $user->profile_image_url);
 
                 $user->update([
                     'name' => $request->name,
