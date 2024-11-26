@@ -16,7 +16,7 @@ class MeetingRoomLocationController extends Controller
     public function index(Request $request)
     {
         try {
-            $query = RoomLocation::query()->with(['region_state:id,name', 'township:id,name']);
+            $query = RoomLocation::query()->where('id', $request->user()->id)->with(['region_state:id,name', 'township:id,name']);
 
             $filterFields = ['name', 'region_state.name', 'township.name'];
             $roomLocations = $this->filterSortPaginate($query, $request, $filterFields);
@@ -50,6 +50,7 @@ class MeetingRoomLocationController extends Controller
                 'name' => $request->name,
                 'region_state_id' => $request->region_state_id,
                 'township_id' => $request->township_id,
+                'company_id' => $request->user()->id
             ]);
 
             return redirect()->route('room-locations.index')->with('success', 'Room Location created successfully.');

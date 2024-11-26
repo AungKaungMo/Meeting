@@ -128,7 +128,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+        Str::slug(env('APP_NAME', 'laravel'), '_') . '_session'
     ),
 
     /*
@@ -211,4 +211,8 @@ return [
 
     'partitioned' => false,
 
+    'guard_mappings' => [
+        'company' => 'auth_company',
+        'employee' => 'auth_employee',
+    ],
 ];

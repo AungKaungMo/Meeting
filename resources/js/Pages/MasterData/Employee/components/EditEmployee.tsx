@@ -147,7 +147,6 @@ const EditEmployee = ({
                         }
                         options={Roles}
                         placeholder="Select options"
-                        width={300}
                     />
 
                     {/* Department */}
@@ -159,7 +158,6 @@ const EditEmployee = ({
                         }
                         options={departments}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.department_id}
                         helperText={errors.department_id}
                     />
@@ -173,7 +171,6 @@ const EditEmployee = ({
                         }
                         options={ActiveInactiveStatus}
                         placeholder="Select options"
-                        width={300}
                     />
                 </Stack>
 

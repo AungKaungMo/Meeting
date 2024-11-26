@@ -113,7 +113,6 @@ const EditRegionAndState = ({
                         }
                         options={ActiveInactiveStatus}
                         placeholder="Select options"
-                        width={300}
                     />
                 </Stack>
 

@@ -29,7 +29,8 @@ type CurrentUserType = {
       name: string,
       email: string,
       profile_image_url: string;
-      short_name: string
+      short_name: string;
+      type: string
     }
   }
 }
@@ -55,13 +56,22 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     [handleClosePopover]
   );
 
+  const { props } = usePage<CurrentUserType>()
+  console.log(props.auth, 'fei')
+
   const handleLogout : FormEventHandler = (e) => {
     e.preventDefault();
+    const current_type = props.auth.user.type;
 
-    post(route('logout'))
+    switch(current_type) {
+      case "client" : 
+        post(route('company.logout'))
+      case "employee" :
+        post(route('employee.logout'))
+      case "owner" : 
+        post(route('logout'))
+    }
   }
-
-  const { props } = usePage<CurrentUserType>()
    return (
     <>
       <IconButton

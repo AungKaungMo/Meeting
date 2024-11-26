@@ -25,19 +25,25 @@ export const navData = [
     }, 
     {
       title: "Meeting",
-      type: ['client', 'employee'],
+      type: ['employee'],
       data: [
         {
           title: 'Invitation',
           path: '/meeting-invitations',
           icon: icon('ic-invitation'),
-          type: ['client', 'employee']
+          type: ['employee']
+        },
+        {
+          title: 'Attendance',
+          path: '/meeting-attendances',
+          icon: icon('ic-attendance'),
+          type: ['employee']
         },
         {
           title: 'Minute',
           path: '/meeting-minutes',
           icon: icon('ic-meeting-minute'),
-          type: ['client', 'employee']
+          type: ['employee']
         }
       ]
     },

@@ -125,7 +125,6 @@ const NewPackage = ({ open, onClose }: NewPackageProps) => {
                             { id: 0, name: "No" },
                         ]}
                         placeholder="Select options"
-                        width={300}
                     />
 
                     {/* Max Employee */}

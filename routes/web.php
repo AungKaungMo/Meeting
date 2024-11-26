@@ -5,7 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\v1\CompanyController;
 use App\Http\Controllers\Web\v1\DepartmentController;
 use App\Http\Controllers\Web\v1\EmployeeController;
+use App\Http\Controllers\Web\v1\MeetingAttendanceController;
 use App\Http\Controllers\Web\v1\MeetingInvitationController;
+use App\Http\Controllers\Web\v1\MeetingMinuteController;
 use App\Http\Controllers\Web\v1\MeetingRoomLocationController;
 use App\Http\Controllers\Web\v1\PackageController;
 use App\Http\Controllers\Web\v1\RegionAndStateController;
@@ -65,6 +67,7 @@ Route::middleware('auth')->group(function () {
 //COMPANY
 Route::get('/company/login', [CompanyController::class, 'showLoginForm'])->name('company.loginForm');
 Route::post('/company/login', [CompanyController::class, 'login'])->name('company.login');
+Route::post('/company/logout', [CompanyController::class, 'logout'])->name('company.logout');
 
 Route::middleware(['auth:company'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
@@ -76,20 +79,28 @@ Route::middleware(['auth:company'])->group(function () {
 
     Route::resource('/employees', EmployeeController::class);
     Route::post('/employees/import', [EmployeeController::class, 'importEmployees']);
-
-    //MEETING INVITATION
-    Route::resource('/meeting-invitations', MeetingInvitationController::class);
-
-    //MEETING MINUTE
-    Route::resource('/meeting-minutes', MeetingInvitationController::class);
 });
 
 //EMPLOYEE
 Route::get('/employee/login', [EmployeeController::class, 'showLoginForm'])->name('employee.loginForm');
 Route::post('/employee/login', [EmployeeController::class, 'login'])->name('employee.login');
+Route::post('/employee/logout', [EmployeeController::class, 'logout'])->name('employee.logout');
 
 Route::get('/employee/change-password', [EmployeeController::class, 'showChangePasswordForm'])->name('employee.changePasswordForm');
 Route::post('/employee/change-password', [EmployeeController::class, 'changePassword'])->name('employee.changePassword');
+
+Route::middleware(['auth:employee'])->group(function () {
+    //MEETING INVITATION
+    Route::resource('/meeting-invitations', MeetingInvitationController::class);
+
+    //MEETING ATTENDANCE
+    Route::resource('/meeting-attendances', MeetingAttendanceController::class);
+
+    //MEETING MINUTE
+    Route::resource('/meeting-minutes', MeetingMinuteController::class);
+    Route::any('/meeting-image-upload', [MeetingMinuteController::class, 'imageUpload'])->name('image.upload');
+});
+
 // Route::middleware(['auth:employee'])->group(function () {
 
 // });

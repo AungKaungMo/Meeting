@@ -183,7 +183,6 @@ const NewCompany = ({ open, onClose, packages }: NewCompanyProps) => {
                         onChange={(e) => setData("package_id", Number(e.target.value))}
                         options={packages}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.package_id}
                         helperText={errors.package_id}
                     />

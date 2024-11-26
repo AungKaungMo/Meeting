@@ -6,3 +6,5 @@ export * from "./RegionStateType";
 export * from "./TownshipType";
 export * from "./RoomLocation";
 export * from "./MeetingInvitationType";
+export * from "./AttendanceType";
+export * from "./MeetingMinuteType";

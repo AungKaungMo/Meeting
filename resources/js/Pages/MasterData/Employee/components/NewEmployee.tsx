@@ -117,7 +117,6 @@ const NewEmployee = memo(({ open, onClose, departments }: NewEmployeeProps) => {
                         }
                         options={Roles}
                         placeholder="Select options"
-                        width={300}
                     />
                    
                     {/* Department */}
@@ -130,7 +129,6 @@ const NewEmployee = memo(({ open, onClose, departments }: NewEmployeeProps) => {
                         options={departments}
                         selectedId="code"
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.department_id}
                         helperText={errors.department_id}
                     />

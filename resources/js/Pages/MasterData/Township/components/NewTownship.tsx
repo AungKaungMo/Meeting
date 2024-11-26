@@ -88,7 +88,6 @@ const NewTownship = ({ open, onClose, region_states }: NewTownshipProps) => {
                         onChange={(e) => setData("region_state_id", Number(e.target.value))}
                         options={region_states}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.region_state_id}
                         helperText={errors.region_state_id}
                     />

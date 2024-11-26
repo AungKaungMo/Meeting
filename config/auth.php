@@ -43,10 +43,12 @@ return [
         'company' => [
             'driver' => 'session',
             'provider' => 'companies',
+            'session_key' => 'auth_company',
         ],
         'employee' => [
             'driver' => 'session',
             'provider' => 'employees',
+            'session_key' => 'auth_employee',
         ]
     ],
 

@@ -183,7 +183,6 @@ const NewMeetingInvitation = ({
                                 : { ...department }
                         )}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.host_department_id}
                         helperText={errors.host_department_id}
                     />
@@ -208,7 +207,6 @@ const NewMeetingInvitation = ({
                                 : { ...department }
                         )}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.invited_departments}
                         helperText={errors.invited_departments}
                     />
@@ -222,7 +220,6 @@ const NewMeetingInvitation = ({
                         }
                         options={roomLocations}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.room_location_id}
                         helperText={errors.room_location_id}
                     />
@@ -269,7 +266,6 @@ const NewMeetingInvitation = ({
                         }
                         options={filteredEmployees}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.participants}
                         helperText={errors.participants}
                     />
@@ -283,7 +279,6 @@ const NewMeetingInvitation = ({
                         }
                         options={employees.filter(employee => data.participants?.includes(employee.id)) || []}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.host_by_id}
                         helperText={errors.host_by_id}
                     />

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Web\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\MeetingAttendance;
 use App\Models\MeetingInvitation;
 use App\Models\RoomLocation;
 use App\Traits\FilterSortPaginate;
@@ -28,18 +30,29 @@ class MeetingInvitationController extends Controller
                     'participants:id,name'
                 ]);
 
+            if ($request->user()->role === 'employee') {
+                $query->where(function ($query) use ($request) {
+                    $query->whereHas('participants', function ($query) use ($request) {
+                        $query->where('employees.id', $request->user()->id); // Explicit table alias
+                    })
+                        ->orWhere('created_by_id', $request->user()->id)
+                        ->orWhere('host_by_id', $request->user()->id);
+                });
+            }
+
             $filterFields = ['title', 'agenda', 'host_department.name', 'host_by.name', 'created_by.name', 'room_location.name'];
             $meetings = $this->filterSortPaginate($query, $request, $filterFields);
 
+            $departmentId = Department::findOrFail($request->user()->department_id);
             $employees = Employee::select('id', 'name', 'department_id')->whereHas(
                 'department',
                 fn($query) =>
-                $query->where('company_id', $request->user()->id)
+                $query->where('company_id', $departmentId?->company_id)
             )->where('status', 1)
                 ->get();
 
-            $departments = Department::select('id', 'name', 'code')->where('status', 1)->where('company_id', $request->user()->id)->get();
-            $roomLocations = RoomLocation::select('id', 'name')->where('status', 1)->get();
+            $departments = Department::select('id', 'name', 'code')->where('status', 1)->where('company_id', $departmentId?->company_id)->get();
+            $roomLocations = RoomLocation::select('id', 'name')->where('company_id', $departmentId?->company_id)->where('status', 1)->get();
 
             return Inertia::render('Meeting/Invitation/MeetingInvitationList', [
                 'meetings' => $meetings,
@@ -120,20 +133,20 @@ class MeetingInvitationController extends Controller
             'participants' => 'required|array',
             'host_by_id' => 'required',
             'status' => 'required|in:0,1,2',
-            'reason' => 'required_if:status,2|string'
+            'reason' => 'required_if:status,2'
         ], [
             'reason.required_if' => 'The reason field is required when status is canceled.'
         ]);
 
-        if ($request->status === 1) {
-            return back()->withErrors(['error' => 'Meeting invitation is already confirmed.'])->withInput();
-        } else if ($request->status === 2) {
-            return back()->withErrors(['error' => 'Meeting invitation is already canceled.'])->withInput();
-        }
-
         DB::beginTransaction();
         try {
             $meeting = MeetingInvitation::findOrFail($id);
+
+            if ($meeting->status === 1) {
+                return back()->withErrors(['error' => 'Meeting invitation is already confirmed.'])->withInput();
+            } else if ($meeting->status === 2) {
+                return back()->withErrors(['error' => 'Meeting invitation is already canceled.'])->withInput();
+            }
 
             $meeting->update([
                 'title' => $request->title,
@@ -146,7 +159,7 @@ class MeetingInvitationController extends Controller
                 'host_by_id' => $request->host_by_id,
                 'remark' => $request->remark,
                 'status' => $request->status,
-                'reason' => $request->status === 2 ? $request->reason : '',
+                'reason' => $request->status === 2 ? $request->reason : null,
             ]);
 
             if ($request->invited_departments) {
@@ -163,11 +176,15 @@ class MeetingInvitationController extends Controller
                 );
             }
 
+            if ($request->status === 1) {
+                MeetingAttendance::create([
+                    'meeting_invitation_id' => $meeting->id,
+                ]);
+            }
+
             DB::commit();
             return redirect()->route('meeting-invitations.index')->with('success', 'Meeting Invitation updated successfully.');
         } catch (\Throwable $th) {
-            DB::rollBack();
-            dd($th->getMessage());
             return back()->withErrors(['error' => 'Failed to update meeting invitation: ' . $th->getMessage()])->withInput();
         }
     }

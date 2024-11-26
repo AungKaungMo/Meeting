@@ -135,7 +135,6 @@ const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
                         }
                         options={Status}
                         placeholder="Select options"
-                        width={300}
                     />
 
                     {/* Max Employee */}
@@ -159,7 +158,6 @@ const EditPackage = ({ open, onClose, packageData }: EditPackageProps) => {
                         }
                         options={ActiveInactiveStatus}
                         placeholder="Select options"
-                        width={300}
                     />
 
                     {desc.map((item, index) => (

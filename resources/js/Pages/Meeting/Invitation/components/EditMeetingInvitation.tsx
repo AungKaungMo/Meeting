@@ -218,7 +218,6 @@ const EditMeetingInvitation = ({
                                 : { ...department }
                         )}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.host_department_id}
                         helperText={errors.host_department_id}
                     />
@@ -243,7 +242,6 @@ const EditMeetingInvitation = ({
                                 : { ...department }
                         )}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.invited_departments}
                         helperText={errors.invited_departments}
                     />
@@ -257,7 +255,6 @@ const EditMeetingInvitation = ({
                         }
                         options={roomLocations}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.room_location_id}
                         helperText={errors.room_location_id}
                     />
@@ -304,7 +301,6 @@ const EditMeetingInvitation = ({
                         }
                         options={filteredEmployees}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.participants}
                         helperText={errors.participants}
                     />
@@ -318,7 +314,6 @@ const EditMeetingInvitation = ({
                         }
                         options={employees.filter(employee => data.participants?.includes(employee.id)) || []}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.host_by_id}
                         helperText={errors.host_by_id}
                     />
@@ -339,11 +334,10 @@ const EditMeetingInvitation = ({
                         }
                         options={MeetingStatus}
                         placeholder="Select options"
-                        width={300}
                     />
 
                     {/* Reason */}
-                    {(data.status === 1 || data.status === 2) && (
+                    {(data.status === 2) && (
                         <CustomTextField
                         label="Reason"
                         value={data.reason}

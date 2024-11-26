@@ -127,7 +127,6 @@ const EditRoomLocation = ({
                         onChange={(e) => setData("region_state_id", Number(e.target.value))}
                         options={region_states}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.region_state_id}
                         helperText={errors.region_state_id}
                     />
@@ -139,7 +138,6 @@ const EditRoomLocation = ({
                         onChange={(e) => setData("township_id", Number(e.target.value))}
                         options={townships && townships.length > 0 && data.region_state_id ? townships.filter(township => township.region_state_id === data.region_state_id) : []}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.township_id}
                         helperText={errors.township_id}
                     />
@@ -153,7 +151,6 @@ const EditRoomLocation = ({
                         }
                         options={ActiveInactiveStatus}
                         placeholder="Select options"
-                        width={300}
                     />
                 </Stack>
 

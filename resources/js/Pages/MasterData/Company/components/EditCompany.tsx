@@ -243,7 +243,6 @@ const EditCompany = ({
                         }
                         options={packages}
                         placeholder="Select options"
-                        width={300}
                         error={!!errors.package_id}
                         helperText={errors.package_id}
                     />
@@ -257,7 +256,6 @@ const EditCompany = ({
                         }
                         options={ActiveInactiveStatus}
                         placeholder="Select options"
-                        width={300}
                     />
                 </Stack>
 

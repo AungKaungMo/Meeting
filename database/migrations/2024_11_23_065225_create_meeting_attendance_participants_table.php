@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('meeting_minutes', function (Blueprint $table) {
+        Schema::create('meeting_attendance_participants', function (Blueprint $table) {
             $table->id();
             $table->foreignId('meeting_attendance_id')->constrained('meeting_attendances')->onDelete('cascade')->onUpdate('cascade');
-            $table->longText('detail')->nullable();
-            $table->foreignId('updated_by_id')->nullable()->constrained('employees')->onDelete('cascade')->onUpdate('cascade');
-            $table->tinyInteger('status')->default(0)->comment('0 mean meeting waiting, 1 mean meeting confirm, 2 mean draft.');
+            $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade')->onUpdate('cascade');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('meeting_minutes');
+        Schema::dropIfExists('meeting_attendance_participants');
     }
 };

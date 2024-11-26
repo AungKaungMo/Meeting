@@ -184,7 +184,7 @@ class EmployeeController extends Controller
                     return redirect()->route('employee.changePasswordForm');
                 }
 
-                return back()->with('message', 'Login successful.');
+                return redirect()->route('meeting-invitations.index')->with('message', 'Login successful.');
                 // return redirect(RouteServiceProvider::HOME);
             }
 
@@ -221,5 +221,12 @@ class EmployeeController extends Controller
         } catch (\Throwable $th) {
             return back()->withErrors(['error' => $th->getMessage()]);
         }
+    }
+
+    public function logout()
+    {
+        Auth::guard('employee')->logout();
+
+        return redirect()->route('employee.login');
     }
 }
