@@ -51,10 +51,5 @@ jobs:
           cp .env.example .env
           php artisan key:generate
 
-      - name: Migration App
-        run: |
-          php artisan migrate --env=testing
-          php artisan db:seed --env=testing
-
       - name: Run tests
         run: php artisan test
