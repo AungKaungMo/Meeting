@@ -3,6 +3,9 @@ name: Fix Code Style
 on:
   workflow_call:
 
+permissions:
+  contents: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
