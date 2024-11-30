@@ -14,7 +14,7 @@ createServer((page) =>
         title: (title) => `${title} - ${appName}`,
         resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, import.meta.glob('./Pages/**/*.tsx')),
         setup: ({ App, props }) => {
-            global.route<RouteName> = (name, params, absolute) =>
+            global.route = <T extends string>(name: T, params?: any, absolute?: boolean) =>
                 route(name, params, absolute, {
                     // @ts-expect-error
                     ...page.props.ziggy,

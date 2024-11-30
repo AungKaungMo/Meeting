@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return Inertia::location(route('dashboard'));
+        return Inertia::location(route('users'));
 
         // return redirect()->intended(RouteServiceProvider::HOME);
     }
